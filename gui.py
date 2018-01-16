@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter.ttk import Separator, Style
+from tkinter.ttk import Separator
 
 def hoofdmenuframe():
     global hoofdmenuframe
@@ -13,11 +13,8 @@ def hoofdmenuframe():
     kamer1lichtlabel = tk.Label(master=hoofdmenuframe, background="white", text="Licht: ")
     kamer1lichtlabel.grid(row=1, column=0, padx=10, pady=10)
 
-    kamer1roodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
+    kamer1roodlicht = tk.Label(master=hoofdmenuframe, background="red", width=2)
     kamer1roodlicht.grid(row= 1, column=1, padx=2, pady=5)
-
-    kamer1groenlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer1groenlicht.grid(row=1, column=2, padx=3)
 
     kamer1camerastatus = tk.Label(master=hoofdmenuframe, background="white", text="Camera-status: ")
     kamer1camerastatus.grid(row=2, column=0, padx=10, pady=10)
@@ -25,13 +22,10 @@ def hoofdmenuframe():
     kamer1roodcamerastatus = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer1roodcamerastatus.grid(row=2, column=1, padx=2, pady=5)
 
-    kamer1groencamerastatus = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer1groencamerastatus.grid(row=2, column=2, padx=3)
-
     kamer1camerabeelden = tk.Label(master=hoofdmenuframe, background="white", text="Camerabeelden")
     kamer1camerabeelden.grid(row=3, column=0, padx=10 ,pady=10)
 
-    kamer1camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=5)
+    kamer1camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=2)
     kamer1camerabeeldenknop.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
 
     kamer1nood = tk.Label(master=hoofdmenuframe, background="white", text="Noodknop: ")
@@ -39,10 +33,6 @@ def hoofdmenuframe():
 
     kamer1roodnoodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer1roodnoodlicht.grid(row=4, column=1, padx=3, pady=5)
-
-    kamer1groennoodlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer1groennoodlicht.grid(row=4, column=2, padx=2, pady=5)
-
 
     #KAMER 2
     kamer2label = tk.Label(master=hoofdmenuframe, text="Kamer 2", background="white", font=("",12))
@@ -54,22 +44,16 @@ def hoofdmenuframe():
     kamer2roodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer2roodlicht.grid(row=1, column=5, padx=3, pady=5)
 
-    kamer2groenlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer2groenlicht.grid(row=1, column=6, padx=2)
-
     kamer2camerastatus = tk.Label(master=hoofdmenuframe, background="white", text="Camera-status: ")
     kamer2camerastatus.grid(row=2, column=4, padx=10, pady=10)
 
     kamer2roodcamerastatus = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer2roodcamerastatus.grid(row=2, column=5, padx=2, pady=5)
 
-    kamer2groencamerastatus = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer2groencamerastatus.grid(row=2, column=6, padx=3, pady=5)
-
     kamer2camerabeelden = tk.Label(master=hoofdmenuframe, background="white", text="Camerabeelden: ")
     kamer2camerabeelden.grid(row=3, column=4, padx=10, pady=10)
 
-    kamer2camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=5)
+    kamer2camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=2)
     kamer2camerabeeldenknop.grid(row=3, column=5, columnspan=2, padx=10, pady=10)
 
     kamer2nood = tk.Label(master=hoofdmenuframe, background="white", text="Noodknop: ")
@@ -78,8 +62,6 @@ def hoofdmenuframe():
     kamer2roodnoodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer2roodnoodlicht.grid(row=4, column=5, padx=3, pady=5)
 
-    kamer2groennoodlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer2groennoodlicht.grid(row=4, column=6, padx=2, pady=5)
 
     #Separater
     sep = Separator(hoofdmenuframe, orient="vertical")
