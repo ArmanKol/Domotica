@@ -34,34 +34,56 @@ def hoofdmenuframe():
     kamer1camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=5)
     kamer1camerabeeldenknop.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
 
+    kamer1nood = tk.Label(master=hoofdmenuframe, background="white", text="Noodknop: ")
+    kamer1nood.grid(row=4, column=0, padx=10, pady=10)
+
+    kamer1roodnoodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
+    kamer1roodnoodlicht.grid(row=4, column=1, padx=3, pady=5)
+
+    kamer1groennoodlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
+    kamer1groennoodlicht.grid(row=4, column=2, padx=2, pady=5)
+
 
     #KAMER 2
     kamer2label = tk.Label(master=hoofdmenuframe, text="Kamer 2", background="white", font=("",12))
-    kamer2label.grid(row=0, column=3, columnspan=3, padx=10, pady=10)
+    kamer2label.grid(row=0, column=4, columnspan=3, padx=10, pady=10)
 
     kamer2lichtlabel = tk.Label(master=hoofdmenuframe, background="white", text="Licht: ")
-    kamer2lichtlabel.grid(row=1, column=3, padx=10, pady=10)
+    kamer2lichtlabel.grid(row=1, column=4, padx=10, pady=10)
 
     kamer2roodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
-    kamer2roodlicht.grid(row=1, column=4, padx=3, pady=5)
+    kamer2roodlicht.grid(row=1, column=5, padx=3, pady=5)
 
     kamer2groenlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer2groenlicht.grid(row=1, column=5, padx=2)
+    kamer2groenlicht.grid(row=1, column=6, padx=2)
 
     kamer2camerastatus = tk.Label(master=hoofdmenuframe, background="white", text="Camera-status: ")
-    kamer2camerastatus.grid(row=2, column=3, padx=10, pady=10)
+    kamer2camerastatus.grid(row=2, column=4, padx=10, pady=10)
 
     kamer2roodcamerastatus = tk.Label(master=hoofdmenuframe, background="red4", width=2)
-    kamer2roodcamerastatus.grid(row=2, column=4, padx=2, pady=5)
+    kamer2roodcamerastatus.grid(row=2, column=5, padx=2, pady=5)
 
     kamer2groencamerastatus = tk.Label(master=hoofdmenuframe, background="green4", width=2)
-    kamer2groencamerastatus.grid(row=2, column=5, padx=3, pady=5)
+    kamer2groencamerastatus.grid(row=2, column=6, padx=3, pady=5)
 
     kamer2camerabeelden = tk.Label(master=hoofdmenuframe, background="white", text="Camerabeelden: ")
-    kamer2camerabeelden.grid(row=3, column=3, padx=10, pady=10)
+    kamer2camerabeelden.grid(row=3, column=4, padx=10, pady=10)
 
     kamer2camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=5)
-    kamer2camerabeeldenknop.grid(row=3, column=4, columnspan=2, padx=10, pady=10)
+    kamer2camerabeeldenknop.grid(row=3, column=5, columnspan=2, padx=10, pady=10)
+
+    kamer2nood = tk.Label(master=hoofdmenuframe, background="white", text="Noodknop: ")
+    kamer2nood.grid(row=4, column=4, padx=10, pady=10)
+
+    kamer2roodnoodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
+    kamer2roodnoodlicht.grid(row=4, column=5, padx=3, pady=5)
+
+    kamer2groennoodlicht = tk.Label(master=hoofdmenuframe, background="green4", width=2)
+    kamer2groennoodlicht.grid(row=4, column=6, padx=2, pady=5)
+
+    #Separater
+    sep = Separator(hoofdmenuframe, orient="vertical")
+    sep.grid(row=0, rowspan=5, column=3, sticky="ns")
 
 
 def toonhoofdmenuframe():
