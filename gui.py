@@ -34,6 +34,12 @@ def hoofdmenuframe():
     kamer1roodnoodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer1roodnoodlicht.grid(row=4, column=1, padx=3, pady=5)
 
+    kamer1noodinformatie = tk.Label(master=hoofdmenuframe, background="white", text="Noodinformatie: ")
+    kamer1noodinformatie.grid(row=5, column=0, padx=5, pady=5)
+
+    kamer1noodknop = tk.Button(master=hoofdmenuframe, width=2)
+    kamer1noodknop.grid(row=5, column=1, padx=5, pady=5)
+
     #KAMER 2
     kamer2label = tk.Label(master=hoofdmenuframe, text="Kamer 2", background="white", font=("",12))
     kamer2label.grid(row=0, column=4, columnspan=3, padx=10, pady=10)
@@ -62,10 +68,15 @@ def hoofdmenuframe():
     kamer2roodnoodlicht = tk.Label(master=hoofdmenuframe, background="red4", width=2)
     kamer2roodnoodlicht.grid(row=4, column=5, padx=3, pady=5)
 
+    kamer2noodinformatie = tk.Label(master=hoofdmenuframe, background="white", text="Noodinformatie: ")
+    kamer2noodinformatie.grid(row=5, column=4, padx=5, pady=5)
+
+    kamer2noodknop = tk.Button(master=hoofdmenuframe, width=2)
+    kamer2noodknop.grid(row=5, column=5, padx=5, pady=5)
 
     #Separater
     sep = Separator(hoofdmenuframe, orient="vertical")
-    sep.grid(row=0, rowspan=5, column=3, sticky="ns")
+    sep.grid(row=0, rowspan=6, column=3, sticky="ns")
 
 
 def toonhoofdmenuframe():
