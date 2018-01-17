@@ -1,11 +1,7 @@
 import tkinter as tk
 from tkinter.ttk import Separator
 
-def hoofdmenuframe():
-    global hoofdmenuframe
-    hoofdmenuframe = tk.Frame(root)
-    hoofdmenuframe.configure(background="white")
-
+def hoofdmenu():
     #KAMER 1
     kamer1label = tk.Label(master=hoofdmenuframe, background="white", text="Kamer 1", font=("",12))
     kamer1label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
@@ -37,7 +33,7 @@ def hoofdmenuframe():
     kamer1noodinformatie = tk.Label(master=hoofdmenuframe, background="white", text="Noodinformatie: ")
     kamer1noodinformatie.grid(row=5, column=0, padx=5, pady=5)
 
-    kamer1noodknop = tk.Button(master=hoofdmenuframe, width=2)
+    kamer1noodknop = tk.Button(master=hoofdmenuframe, width=2, command=toonnoodmenuframe)
     kamer1noodknop.grid(row=5, column=1, padx=5, pady=5)
 
     #KAMER 2
@@ -78,17 +74,76 @@ def hoofdmenuframe():
     sep = Separator(hoofdmenuframe, orient="vertical")
     sep.grid(row=0, rowspan=6, column=3, sticky="ns")
 
+def noodvenster():
+    hoofdmenuterugknop = tk.Button(master=noodmenuframe, width=5, text="Terug", command=toonhoofdmenuframe)
+    hoofdmenuterugknop.grid(row=11, column=0)
+
+    noodcamerabeeldentabel = tk.Label(master=noodmenuframe, background="white",text="Camerabeelden: ")
+    noodcamerabeeldentabel.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodcameralicht = tk.Label(master=noodmenuframe, background="red4", width=2)
+    noodcameralicht.grid(row=0, column=1)
+
+    noodcameraknop = tk.Button(master=noodmenuframe, width=2)
+    noodcameraknop.grid(row=0, column=2, padx=5, pady=5)
+
+    noodcontactgegevenslabel = tk.Label(master=noodmenuframe, background="white", text="Noodcontactgegevens", font=("",15))
+    noodcontactgegevenslabel.grid(row=1, column=0, padx=5, pady=5)
+
+    noodvoornaamlabel = tk.Label(master=noodmenuframe, background="white", text="Voornaam: ")
+    noodvoornaamlabel.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodtussenvoegsellabel = tk.Label(master=noodmenuframe, background="white", text="Tussenvoegsel: ")
+    noodtussenvoegsellabel.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodachternaamlabel = tk.Label(master=noodmenuframe, background="white", text="Achternaam: ")
+    noodachternaamlabel.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodgeslachtlabel = tk.Label(master=noodmenuframe, background="white", text="Geslacht: ")
+    noodgeslachtlabel.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodgeboortedatumlabel = tk.Label(master=noodmenuframe, background="white", text="Geboortedatum: ")
+    noodgeboortedatumlabel.grid(row=6, column=0, padx=5, pady=5 ,sticky=tk.W)
+
+    noodtelefoonnummerlabel = tk.Label(master=noodmenuframe, background="white", text="Telefoonnummer: ")
+    noodtelefoonnummerlabel.grid(row=7, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodplaatsnaamlabel = tk.Label(master=noodmenuframe, background="white", text="Plaatsnaam: ")
+    noodplaatsnaamlabel.grid(row=8, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodhuisnummerlabel = tk.Label(master=noodmenuframe, background="white", text="Huisnummer: ")
+    noodhuisnummerlabel.grid(row=9, column=0, padx=5, pady=5, sticky=tk.W)
+
+    noodpostcodelabel = tk.Label(master=noodmenuframe, background="white", text="Postcode: ")
+    noodpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
 def toonhoofdmenuframe():
-    hoofdmenuframe()
+    hoofdmenu()
+    noodmenuframe.pack_forget()
     hoofdmenuframe.pack()
+
+def toonnoodmenuframe():
+    noodvenster()
+    hoofdmenuframe.pack_forget()
+    noodmenuframe.pack()
+
+def frames():
+    global hoofdmenuframe
+    global noodmenuframe
+    hoofdmenuframe = tk.Frame(root)
+    hoofdmenuframe.configure(background="white")
+    hoofdmenuframe.pack()
+
+    noodmenuframe = tk.Frame(root)
+    noodmenuframe.configure(background="white")
+    noodmenuframe.pack()
 
 
 root = tk.Tk()
 root.title("Domotica systeem")
 root.configure(background="white")
 
+frames()
 toonhoofdmenuframe()
-
 
 root.mainloop()
