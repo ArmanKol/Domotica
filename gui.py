@@ -138,7 +138,6 @@ def frames():
     noodmenuframe.configure(background="white")
     noodmenuframe.pack()
 
-
 root = tk.Tk()
 root.title("Domotica systeem")
 root.configure(background="white")
