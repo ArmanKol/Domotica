@@ -1,4 +1,5 @@
 import tkinter as tk
+import psycopg2
 from tkinter.ttk import Separator
 
 def hoofdmenu():
@@ -78,44 +79,44 @@ def noodvenster():
     hoofdmenuterugknop = tk.Button(master=noodmenuframe, width=5, text="Terug", command=toonhoofdmenuframe)
     hoofdmenuterugknop.grid(row=11, column=0)
 
-    noodcamerabeeldentabel = tk.Label(master=noodmenuframe, background="royal blue",text="Camerabeelden: ")
-    noodcamerabeeldentabel.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvenstercamerabeeldentabel = tk.Label(master=noodmenuframe, background="royal blue",text="Camerabeelden: ")
+    noodvenstercamerabeeldentabel.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodcameralicht = tk.Label(master=noodmenuframe, background="red", width=2)
-    noodcameralicht.grid(row=0, column=1)
+    noodvenstercameralicht = tk.Label(master=noodmenuframe, background="red", width=2)
+    noodvenstercameralicht.grid(row=0, column=1)
 
-    noodcameraknop = tk.Button(master=noodmenuframe, width=2)
-    noodcameraknop.grid(row=0, column=2, padx=5, pady=5)
+    noodvenstercameraknop = tk.Button(master=noodmenuframe, width=2)
+    noodvenstercameraknop.grid(row=0, column=2, padx=5, pady=5)
 
-    noodcontactgegevenslabel = tk.Label(master=noodmenuframe, background="royal blue", text="Noodcontactgegevens", font=("",15))
-    noodcontactgegevenslabel.grid(row=1, column=0, padx=5, pady=5)
+    noodvenstercontactgegevenslabel = tk.Label(master=noodmenuframe, background="royal blue", text="Noodcontactgegevens", font=("",15))
+    noodvenstercontactgegevenslabel.grid(row=1, column=0, padx=5, pady=5)
 
-    noodvoornaamlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Voornaam: ")
-    noodvoornaamlabel.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvenstervoornaamlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Voornaam: \t\t"+ databasereader("""SELECT voornaam from persoon where noodpersoonid = 1"""))
+    noodvenstervoornaamlabel.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodtussenvoegsellabel = tk.Label(master=noodmenuframe, background="royal blue", text="Tussenvoegsel: ")
-    noodtussenvoegsellabel.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvenstertussenvoegsellabel = tk.Label(master=noodmenuframe, background="royal blue", text="Tussenvoegsel: \t\t" + str(databasereader("""SELECT tussenvoegsel from persoon where noodpersoonid = 1""")))
+    noodvenstertussenvoegsellabel.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodachternaamlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Achternaam: ")
-    noodachternaamlabel.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvensterachternaamlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Achternaam: \t\t"+ databasereader("""SELECT achternaam from persoon where noodpersoonid = 1"""))
+    noodvensterachternaamlabel.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodgeslachtlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Geslacht: ")
-    noodgeslachtlabel.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvenstergeslachtlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Geslacht: \t\t"+ databasereader("""SELECT geslacht from persoon where noodpersoonid = 1"""))
+    noodvenstergeslachtlabel.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodgeboortedatumlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Geboortedatum: ")
-    noodgeboortedatumlabel.grid(row=6, column=0, padx=5, pady=5 ,sticky=tk.W)
+    noodvenstergeboortedatumlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Geboortedatum: \t\t"+ str(databasereader("""SELECT geboortedatum from persoon where noodpersoonid = 1""")))
+    noodvenstergeboortedatumlabel.grid(row=6, column=0, padx=5, pady=5 ,sticky=tk.W)
 
-    noodtelefoonnummerlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Telefoonnummer: ")
-    noodtelefoonnummerlabel.grid(row=7, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvenstertelefoonnummerlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Telefoonnummer: \t"+ databasereader("""SELECT telefoonnummer from persoon where noodpersoonid = 1"""))
+    noodvenstertelefoonnummerlabel.grid(row=7, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodplaatsnaamlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Plaatsnaam: ")
-    noodplaatsnaamlabel.grid(row=8, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvensterplaatsnaamlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Plaatsnaam: \t\t" + databasereader("""SELECT plaatsnaam from persoon where noodpersoonid = 1"""))
+    noodvensterplaatsnaamlabel.grid(row=8, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodhuisnummerlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Huisnummer: ")
-    noodhuisnummerlabel.grid(row=9, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvensterhuisnummerlabel = tk.Label(master=noodmenuframe, background="royal blue", text="Huisnummer: \t\t" + databasereader("""SELECT huisnummer from persoon where noodpersoonid = 1"""))
+    noodvensterhuisnummerlabel.grid(row=9, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodpostcodelabel = tk.Label(master=noodmenuframe, background="royal blue", text="Postcode: ")
-    noodpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
+    noodvensterpostcodelabel = tk.Label(master=noodmenuframe, background="royal blue", text="Postcode: \t\t" + databasereader("""SELECT postcode from persoon where noodpersoonid = 1"""))
+    noodvensterpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
 def toonhoofdmenuframe():
     hoofdmenu()
@@ -138,16 +139,31 @@ def frames():
     noodmenuframe.configure(background="royal blue")
     noodmenuframe.pack()
 
+def databasereader(x):
+    try:
+        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+    except:
+        print("I am unable to connect to the database")
+
+    cur = conn.cursor()
+    cur.execute(x)
+    rows = cur.fetchall()
+    for row in rows:
+        informatie = row[0]
+    return informatie
+
 def startgui():
     global root
 
     root = tk.Tk()
     root.title("Domotica systeem")
     root.configure(background="white")
+    root.resizable(False, False)
 
     frames()
     toonhoofdmenuframe()
 
     root.mainloop()
+
 
 startgui()
