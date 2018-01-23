@@ -214,23 +214,22 @@ def databasereader(x):
     cur.execute(x)
     rows = cur.fetchall()
     for row in rows:
-        informatie = row[0]
+        informatie = row
 
     return informatie
 
 def statuslamp():
-    while True:
-        current = databasereader("select activiteitid from kameractiviteit")
-        databasereader("select * from kameractiviteit where activiteitid = 14")
+    #current = databasereader("select activiteitid from kameractiviteit")
+    current= databasereader("select * from kameractiviteit where activiteitid = 14")
 
-        old = current - 1
-        print(old)
+    #old = current - 1
+    print(current[3])
 
-        if kamer1roodlicht["background"] == "red":
-            kamer1roodlicht["background"]="green"
+    if current[3] == 1:
+        kamer1roodlicht["background"]="green"
 
-        elif kamer1roodlicht["background"] == "green":
-            kamer1roodlicht["background"] = "red"
+    #elif kamer1roodlicht["background"] == "green":
+    #    kamer1roodlicht["background"] = "red"
 
 def startgui():
     global root
