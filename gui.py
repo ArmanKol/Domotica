@@ -168,11 +168,10 @@ def toonhoofdmenuframe():
     noodmenuframe2.pack_forget()
     hoofdmenuframe.pack()
 
-
 def toonnoodmenuframe1():
     noodvensterkamer1()
     hoofdmenuframe.pack_forget()
-    toonnoodmenuframe1()
+    noodmenuframe1.pack()
 
 def toonnoodmenuframe2():
     noodvensterkamer2()
