@@ -30,7 +30,7 @@ def hoofdmenu():
     kamer1camerabeelden = tk.Label(master=hoofdmenuframe, background="gainsboro", text="Camerabeelden")
     kamer1camerabeelden.grid(row=3, column=0, padx=10 ,pady=10)
 
-    kamer1camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=2)
+    kamer1camerabeeldenknop = tk.Button(master=hoofdmenuframe, width=2, command=statuslamp)
     kamer1camerabeeldenknop.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
 
     kamer1nood = tk.Label(master=hoofdmenuframe, background="gainsboro", text="Noodknop: ")
@@ -190,6 +190,7 @@ def frames():
     global hoofdmenuframe
     global noodmenuframe1
     global noodmenuframe2
+
     hoofdmenuframe = tk.Frame(root)
     hoofdmenuframe.configure(background="gainsboro")
     hoofdmenuframe.pack()
@@ -214,11 +215,22 @@ def databasereader(x):
     rows = cur.fetchall()
     for row in rows:
         informatie = row[0]
+
     return informatie
 
 def statuslamp():
-    if kamer1roodlicht["background"] == "red":
-        kamer1roodlicht["background"]="green"
+    while True:
+        current = databasereader("select activiteitid from kameractiviteit")
+        databasereader("select * from kameractiviteit where activiteitid = 14")
+
+        old = current - 1
+        print(old)
+
+        if kamer1roodlicht["background"] == "red":
+            kamer1roodlicht["background"]="green"
+
+        elif kamer1roodlicht["background"] == "green":
+            kamer1roodlicht["background"] = "red"
 
 def startgui():
     global root
