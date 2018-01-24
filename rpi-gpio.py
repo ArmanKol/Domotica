@@ -117,10 +117,10 @@ while True:
             print('Stopping motion...')
             command = 'sudo systemctl stop motion'
             os.system('echo %s|sudo -S %s' % (sudoPass, command))
-            print('Motion stopped!')
+            print('\nMotion stopped!')
         else:
             print('Starting motion...')
             command = 'sudo systemctl start motion'
             os.system('echo %s|sudo -S %s' % (sudoPass, command))
-            print('Motion started!')
+            print('\nMotion started!')
         time.sleep(0.3)
