@@ -1,6 +1,31 @@
 import tkinter as tk
-import psycopg2
+import psycopg2, socket, threading, time
 from tkinter.ttk import Separator
+
+class client_thread(threading.Thread):
+    def __init__(self, clientsocket):
+        super().__init__()
+        self.clientsocket = clientsocket
+
+    def run(self):
+        while 1:
+            time.sleep(2)
+            try:
+                self.clientsocket.send(b'KA')
+                message = self.clientsocket.recv(2).decode()
+            except ConnectionResetError:
+                self.clientsocket.close()
+                break
+            if message == 'OK':
+                continue
+        self._stop()
+
+def acceptIncomingConnections():
+    while 1:
+        (clientsocket, address) = serversocket.accept()
+        ct = client_thread(clientsocket)
+        ct.run()
+
 
 def hoofdmenu():
     global kamer1roodlicht
@@ -260,6 +285,15 @@ def startgui():
     toonhoofdmenuframe()
 
     root.mainloop()
+
+
+serversocket = socket.socket(
+    socket.AF_INET, socket.SOCK_STREAM)
+serversocket.bind(('', 80))
+serversocket.listen(5)
+
+incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
+incomingConnectionsThread.start()
 
 
 startgui()
