@@ -1,4 +1,4 @@
-import psycopg2, time, guialt
+import psycopg2
 
 while True:
     try:
