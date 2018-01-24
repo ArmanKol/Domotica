@@ -1,18 +1,40 @@
 import psycopg2
-import sys
+import RPi.GPIO as GPIO
+import time
 
-con = None
 
-try:
-    con = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
-    cur = con.cursor()
-    cur.execute("CREATE TABLE Products(Id INTEGER PRIMARY KEY, Name VARCHAR(20), Price INT)")
-    cur.execute("INSERT INTO Products VALUES(1,'Milk',5)")
-    cur.execute("INSERT INTO Products VALUES(2,'Sugar',7)")
-    cur.execute("INSERT INTO Products VALUES(3,'Coffee',3)")
-    cur.execute("INSERT INTO Products VALUES(4,'Bread',5)")
-    cur.execute("INSERT INTO Products VALUES(5,'Oranges',3)")
-    con.commit()
+def setup():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(True)
+    for buttonPin in buttonPins:
+        GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        print('GPIO PIN ' + str(buttonPin) + ' SETUP COMPLETED')
+    print('SETUP GPIO COMPLETED...')
 
-except:
-    print("I am unable to write to the database")
+
+buttonPins = (5, 12, 23, 21)
+setup()
+
+while True:
+    button1 = GPIO.input(5)
+    button2 = GPIO.input(12)
+    button3 = GPIO.input(23)
+    button4 = GPIO.input(21)
+    if button1 == False:
+        print('BUTTON 1 PRESSED!')
+        con = None
+        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+        cur = conn.cursor()
+        cur.execute("INSERT INTO kameractiviteit (kamerid, hardwareid, status, datum_tijd ) VALUES (1, 2, 0, NOW()  )");
+        conn.commit()
+        conn.close()
+        time.sleep(0.3)
+    elif button2 == False:
+        print('BUTTON 2 PRESSED!')
+        time.sleep(0.3)
+    elif button3 == False:
+        print('BUTTON 3 PRESSED!')
+        time.sleep(0.3)
+    elif button4 == False:
+        print('BUTTON 4 PRESSED!')
+        time.sleep(0.3)
