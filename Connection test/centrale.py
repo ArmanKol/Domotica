@@ -18,18 +18,16 @@ class client_thread(threading.Thread):
                 continue
         self._stop()
 
+def acceptIncomingConnections():
+    while 1:
+        (clientsocket, address) = serversocket.accept()
+        ct = client_thread(clientsocket)
+        ct.run()
 
 serversocket = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('', 80))
 serversocket.listen(5)
 
-while 1:
-    (clientsocket, address) = serversocket.accept()
-    ct = client_thread(clientsocket)
-    ct.run()
-
-
-
-
-
+incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
+incomingConnectionsThread.start()
