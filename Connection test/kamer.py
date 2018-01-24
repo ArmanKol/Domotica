@@ -1,34 +1,46 @@
-import socket, time
+import socket, time, threading
 
 
-while 1:
-    try:
-        s = socket.socket(
-            socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(("localhost", 80))
-    except ConnectionRefusedError:
-        print('Geen verbinding met centrale')
-        time.sleep(10)
-        continue
-
-    while 1:
-        try:
-            message = s.recv(2).decode()
-        except ConnectionResetError:
-            print('Verbinding verbroken')
-            s.shutdown(socket.SHUT_RDWR)
-            s.close()
-            break
-        print(message + ' ontvangen')
-        if message == 'KA':
-            s.send(b'OK')
-            continue
-        elif message == '':
-            s.shutdown(socket.SHUT_RDWR)
-            s.close()
+class serverconnection:
+    def __init__(self, server, port):
+        while True:
+            try:
+                self.s = socket.socket(
+                    socket.AF_INET, socket.SOCK_STREAM)
+                self.s.connect((server, port))
+            except ConnectionRefusedError:
+                print('Geen verbinding met centrale')
+                time.sleep(10)
+                continue
             break
 
 
-    print('Verbinding was gesloten')
-    print('Bezig nieuwe verbinding te maken...')
-    time.sleep(30)
+    def receiveMessage(self):
+        return self.s.recv(2).decode()
+
+
+    def sendMessage(self, message):
+        self.s.send(message.encode())
+
+
+    def keepAlive(self):
+        while True:
+            try:
+                self.sendMessage('OK')
+                time.sleep(5)
+            except:
+                self.shutdown()
+
+
+    def shutdown(self):
+        keepAliveThread._stop()
+        self.s.shutdown(socket.SHUT_RDWR)
+        self.s.close()
+
+server = 'localhost'
+port = 80
+
+clientsocket = serverconnection(server, port)
+keepAliveThread = threading.Thread(target=clientsocket.keepAlive)
+keepAliveThread.start()
+
