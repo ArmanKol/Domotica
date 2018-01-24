@@ -99,31 +99,31 @@ def noodvensterkamer1():
     noodvenstercontactgegevenslabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Noodcontactgegevens", font=("",15))
     noodvenstercontactgegevenslabel.grid(row=1, column=0, padx=5, pady=5)
 
-    noodvenstervoornaamlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Voornaam: \t\t"+ databasereader("""SELECT voornaam from persoon where noodpersoonid = 1"""))
+    noodvenstervoornaamlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Voornaam: \t\t"+ databasereadernood("""SELECT voornaam from persoon where noodpersoonid = 1"""))
     noodvenstervoornaamlabel.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvenstertussenvoegsellabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Tussenvoegsel: \t\t" + str(databasereader("""SELECT tussenvoegsel from persoon where noodpersoonid = 1""")))
+    noodvenstertussenvoegsellabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Tussenvoegsel: \t\t" + str(databasereadernood("""SELECT tussenvoegsel from persoon where noodpersoonid = 1""")))
     noodvenstertussenvoegsellabel.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterachternaamlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Achternaam: \t\t"+ databasereader("""SELECT achternaam from persoon where noodpersoonid = 1"""))
+    noodvensterachternaamlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Achternaam: \t\t"+ databasereadernood("""SELECT achternaam from persoon where noodpersoonid = 1"""))
     noodvensterachternaamlabel.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvenstergeslachtlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Geslacht: \t\t"+ databasereader("""SELECT geslacht from persoon where noodpersoonid = 1"""))
+    noodvenstergeslachtlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Geslacht: \t\t"+ databasereadernood("""SELECT geslacht from persoon where noodpersoonid = 1"""))
     noodvenstergeslachtlabel.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
 
     noodvenstergeboortedatumlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Geboortedatum: \t\t"+ str(databasereader("""SELECT geboortedatum from persoon where noodpersoonid = 1""")))
     noodvenstergeboortedatumlabel.grid(row=6, column=0, padx=5, pady=5 ,sticky=tk.W)
 
-    noodvenstertelefoonnummerlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Telefoonnummer: \t"+ databasereader("""SELECT telefoonnummer from persoon where noodpersoonid = 1"""))
+    noodvenstertelefoonnummerlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Telefoonnummer: \t"+ databasereadernood("""SELECT telefoonnummer from persoon where noodpersoonid = 1"""))
     noodvenstertelefoonnummerlabel.grid(row=7, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterplaatsnaamlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Plaatsnaam: \t\t" + databasereader("""SELECT plaatsnaam from persoon where noodpersoonid = 1"""))
+    noodvensterplaatsnaamlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Plaatsnaam: \t\t" + databasereadernood("""SELECT plaatsnaam from persoon where noodpersoonid = 1"""))
     noodvensterplaatsnaamlabel.grid(row=8, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterhuisnummerlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Huisnummer: \t\t" + databasereader("""SELECT huisnummer from persoon where noodpersoonid = 1"""))
+    noodvensterhuisnummerlabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Huisnummer: \t\t" + databasereadernood("""SELECT huisnummer from persoon where noodpersoonid = 1"""))
     noodvensterhuisnummerlabel.grid(row=9, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterpostcodelabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Postcode: \t\t" + databasereader("""SELECT postcode from persoon where noodpersoonid = 1"""))
+    noodvensterpostcodelabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Postcode: \t\t" + databasereadernood("""SELECT postcode from persoon where noodpersoonid = 1"""))
     noodvensterpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
 def noodvensterkamer2():
@@ -143,31 +143,31 @@ def noodvensterkamer2():
                                                text="Noodcontactgegevens", font=("", 15))
     noodvenstercontactgegevenslabel.grid(row=1, column=0, padx=5, pady=5)
 
-    noodvenstervoornaamlabel = tk.Label(master=noodmenuframe2, background="gainsboro", text="Voornaam: \t\t" + databasereader("""SELECT voornaam from persoon where noodpersoonid = 2"""))
+    noodvenstervoornaamlabel = tk.Label(master=noodmenuframe2, background="gainsboro", text="Voornaam: \t\t" + databasereadernood("""SELECT voornaam from persoon where noodpersoonid = 2"""))
     noodvenstervoornaamlabel.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvenstertussenvoegsellabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Tussenvoegsel: \t\t" + str(databasereader("""SELECT tussenvoegsel from persoon where noodpersoonid = 2""")))
+    noodvenstertussenvoegsellabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Tussenvoegsel: \t\t" + str(databasereadernood("""SELECT tussenvoegsel from persoon where noodpersoonid = 2""")))
     noodvenstertussenvoegsellabel.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterachternaamlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Achternaam: \t\t" + databasereader("""SELECT achternaam from persoon where noodpersoonid = 2"""))
+    noodvensterachternaamlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Achternaam: \t\t" + databasereadernood("""SELECT achternaam from persoon where noodpersoonid = 2"""))
     noodvensterachternaamlabel.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvenstergeslachtlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Geslacht: \t\t" + databasereader("""SELECT geslacht from persoon where noodpersoonid = 2"""))
+    noodvenstergeslachtlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Geslacht: \t\t" + databasereadernood("""SELECT geslacht from persoon where noodpersoonid = 2"""))
     noodvenstergeslachtlabel.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvenstergeboortedatumlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Geboortedatum: \t\t" + str(databasereader("""SELECT geboortedatum from persoon where noodpersoonid = 2""")))
+    noodvenstergeboortedatumlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Geboortedatum: \t\t" + str(databasereadernood("""SELECT geboortedatum from persoon where noodpersoonid = 2""")))
     noodvenstergeboortedatumlabel.grid(row=6, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvenstertelefoonnummerlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Telefoonnummer: \t" + databasereader("""SELECT telefoonnummer from persoon where noodpersoonid = 2"""))
+    noodvenstertelefoonnummerlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Telefoonnummer: \t" + databasereadernood("""SELECT telefoonnummer from persoon where noodpersoonid = 2"""))
     noodvenstertelefoonnummerlabel.grid(row=7, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterplaatsnaamlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Plaatsnaam: \t\t" + databasereader("""SELECT plaatsnaam from persoon where noodpersoonid = 2"""))
+    noodvensterplaatsnaamlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Plaatsnaam: \t\t" + databasereadernood("""SELECT plaatsnaam from persoon where noodpersoonid = 2"""))
     noodvensterplaatsnaamlabel.grid(row=8, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterhuisnummerlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Huisnummer: \t\t" + databasereader("""SELECT huisnummer from persoon where noodpersoonid = 2"""))
+    noodvensterhuisnummerlabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Huisnummer: \t\t" + databasereadernood("""SELECT huisnummer from persoon where noodpersoonid = 2"""))
     noodvensterhuisnummerlabel.grid(row=9, column=0, padx=5, pady=5, sticky=tk.W)
 
-    noodvensterpostcodelabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Postcode: \t\t" + databasereader("""SELECT postcode from persoon where noodpersoonid = 2"""))
+    noodvensterpostcodelabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Postcode: \t\t" + databasereadernood("""SELECT postcode from persoon where noodpersoonid = 2"""))
     noodvensterpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
 def toonhoofdmenuframe():
@@ -204,6 +204,23 @@ def frames():
     noodmenuframe2.pack()
 
 #database reader
+def databasereadernood(x):
+    try:
+        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+    except:
+        print("I am unable to connect to the database")
+
+    cur = conn.cursor()
+    cur.execute(x)
+    rows = cur.fetchall()
+    for row in rows:
+        informatie = row[0]
+
+    if informatie == None:
+        informatie = "-"
+
+    return informatie
+
 def databasereader(x):
     try:
         conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
