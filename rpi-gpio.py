@@ -5,7 +5,8 @@ import socket
 import threading
 
 
-
+noodknoopstatus = "1"
+hardwareid = "4"
 
 class serverconnection:
     def __init__(self, server, port):
@@ -82,9 +83,11 @@ while True:
     button4 = GPIO.input(21)
     if button1 == False:
         print('BUTTON 1 PRESSED!')
+        serverconnection.sendMessage(hardwareid)
         time.sleep(0.3)
     elif button2 == False:
         print('BUTTON 2 PRESSED!')
+        serverconnection.sendMessage(noodknoopstatus)
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
