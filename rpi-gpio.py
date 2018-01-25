@@ -71,6 +71,7 @@ server = 'localhost'
 port = 80
 
 clientsocket = serverconnection(server, port)
+
 keepAliveThread = threading.Thread(target=clientsocket.keepAlive)
 keepAliveThread.start()
 
@@ -81,11 +82,11 @@ while True:
     button4 = GPIO.input(21)
     if button1 == False:
         print('BUTTON 1 PRESSED!')
-        serverconnection.sendMessage(hardwareid)
+        clientsocket.sendMessage(hardwareid)
         time.sleep(0.3)
     elif button2 == False:
         print('BUTTON 2 PRESSED!')
-        serverconnection.sendMessage(noodknoopstatus)
+        clientsocket.sendMessage(noodknoopstatus)
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
