@@ -56,6 +56,7 @@ class serverconnection:
 
 
 def setup():
+    """"setup GPIO related things"""
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(True)
     GPIO.cleanup()
@@ -67,6 +68,7 @@ def setup():
 
 
 def switchLED(pin, ledStatus):
+    """"switch led on/off"""
     if ledStatus == False:
         GPIO.output(pin, 1)
         print('LAMP AAN!')
@@ -77,6 +79,7 @@ def switchLED(pin, ledStatus):
         return False
 
 def switchCAM(currentstatus):
+    """switch camera on/off"""
     sudoPass = 'raspberry'
     if currentstatus:
         print('Motion already running...')
@@ -91,6 +94,7 @@ def switchCAM(currentstatus):
         print('\nMotion started!')
 
 def checkCAMstatus():
+    """"check status of motion daemon, return true/false"""
     motion = os.popen('pgrep motion')
     pid = motion.readline()
     motion.close()
@@ -100,25 +104,27 @@ def checkCAMstatus():
         return False
 
 
-
+# Global variables
 ledOn = False
 buttonPins = (5, 12, 23, 21)
 ledPin = 20
+# Run setup
 setup()
 
+# Socket variables
 server = 'localhost'
 port = 80
-
 clientsocket = serverconnection(server, port)
-
 keepAliveThread = threading.Thread(target=clientsocket.keepAlive)
 keepAliveThread.start()
 
 while True:
+    # Get value from buttons
     button1 = GPIO.input(5)
     button2 = GPIO.input(12)
     button3 = GPIO.input(23)
     button4 = GPIO.input(21)
+    # Check if button has been pressed
     if button1 == False:
         print('BUTTON 1 PRESSED!')
         clientsocket.sendMessage(hardwareid, status)
@@ -126,17 +132,21 @@ while True:
     elif button2 == False:
         print('BUTTON 2 PRESSED!')
         clientsocket.sendMessage(hardwareid, status)
+        # if led is off it must be enabled
         if ledOn == False:
             ledOn = switchLED(ledPin, ledOn)
+        # if camera is off it must me enabled
         if not checkCAMstatus():
             switchCAM(False)
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
+        # switch led on/off according to its last state
         ledOn = switchLED(ledPin, ledOn)
         time.sleep(0.3)
     elif button4 == False:
         print('BUTTON 4 PRESSED!')
+        # switch camera on/off according to its last state
         camStatus = checkCAMstatus()
         switchCAM(camStatus)
         time.sleep(0.3)
