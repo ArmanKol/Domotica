@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg2, mysql
 
 try:
     conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")

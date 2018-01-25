@@ -12,12 +12,11 @@ class client_thread(threading.Thread):
             time.sleep(2)
             try:
                 self.clientsocket.send(b'KA')
-                message = self.clientsocket.recv(2).decode()
+                message = self.clientsocket.recv(8).decode()
             except ConnectionResetError:
                 self.clientsocket.close()
                 break
-            if message == 'OK':
-                continue
+            '''DECODEER DE ONTVANGEN CODE EN ZORG DAT ER ACTIONS ACHTER ZITTEN'''
         self._stop()
 
 def acceptIncomingConnections():

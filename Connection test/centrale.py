@@ -1,4 +1,4 @@
-import socket, threading, time
+import socket, threading, time, psycopg2
 
 class client_thread(threading.Thread):
     def __init__(self, clientsocket):
@@ -18,12 +18,32 @@ class client_thread(threading.Thread):
                 continue
         self._stop()
 
+class kamer:
+    def __init__(self, kamerid):
+        self.kamerid = kamerid
+        cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
+        self.bewoner = cur.fetchall()[0]
+
+
 def acceptIncomingConnections():
     while 1:
         (clientsocket, address) = serversocket.accept()
         ct = client_thread(clientsocket)
         ct.run()
 
+
+conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+cur = conn.cursor()
+
+cur.execute('''SELECT kamerid FROM kamer''')
+kamers = dict()
+for kmr in cur.fetchall():
+    kamers[kmr[0]] = kamer(kmr[0])
+
+for kmr in kamers:
+    print(kamers[kmr].bewoner)
+
+'''
 serversocket = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('', 80))
@@ -31,3 +51,4 @@ serversocket.listen(5)
 
 incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
 incomingConnectionsThread.start()
+'''

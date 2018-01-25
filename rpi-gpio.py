@@ -4,7 +4,7 @@ import os
 import socket
 import threading
 
-
+kamerid = "1"
 noodknoopstatus = "1"
 hardwareid = "4"
 
@@ -25,10 +25,8 @@ class serverconnection:
         return self.s.recv(2).decode()
 
     def sendMessage(self, hardwareID, status):
-        hardwareIDmessage = '{0:>05}'.format(str(hardwareID))
-        statusmessage = '{0:>05}'.format(str(status))
-        self.s.send(hardwareIDmessage.encode("4"))
-        self.s.send(statusmessage.encode("1"))
+        message = '{0:>02}'.format(kamerid) + ';' + '{0:>03}'.format(str(hardwareID)) + ';' + str(status)
+        self.s.send(message.encode())
 
     def keepAlive(self):
         while True:
