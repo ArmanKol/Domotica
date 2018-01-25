@@ -8,7 +8,6 @@ kamerid = "1"
 status = "1"
 hardwareid = "4"
 
-
 class serverconnection:
     def __init__(self, server, port):
         while True:
@@ -67,9 +66,44 @@ def setup():
     print('SETUP GPIO COMPLETED...')
 
 
+def switchLED(pin, ledStatus):
+    if ledStatus == False:
+        GPIO.output(pin, 1)
+        print('LAMP AAN!')
+        return True
+    else:
+        GPIO.output(pin, 0)
+        print('LAMP UIT!')
+        return False
+
+def switchCAM(currentstatus):
+    sudoPass = 'raspberry'
+    if currentstatus:
+        print('Motion already running...')
+        print('Stopping motion...')
+        command = 'sudo systemctl stop motion'
+        os.system('echo %s|sudo -S %s' % (sudoPass, command))
+        print('\nMotion stopped!')
+    else:
+        print('Starting motion...')
+        command = 'sudo systemctl start motion'
+        os.system('echo %s|sudo -S %s' % (sudoPass, command))
+        print('\nMotion started!')
+
+def checkCAMstatus():
+    motion = os.popen('pgrep motion')
+    pid = motion.readline()
+    motion.close()
+    if pid:
+        return True
+    else:
+        return False
+
+
+
+ledOn = False
 buttonPins = (5, 12, 23, 21)
 ledPin = 20
-ledOn = False
 setup()
 
 server = 'localhost'
@@ -92,34 +126,17 @@ while True:
     elif button2 == False:
         print('BUTTON 2 PRESSED!')
         clientsocket.sendMessage(hardwareid, status)
+        if ledOn == False:
+            ledOn = switchLED(ledPin, ledOn)
+        if not checkCAMstatus():
+            switchCAM(False)
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
-        if ledOn == False:
-            GPIO.output(ledPin, 1)
-            ledOn = True
-            print('LAMP AAN!')
-        else:
-            GPIO.output(ledPin, 0)
-            ledOn = False
-            print('LAMP UIT!')
+        ledOn = switchLED(ledPin, ledOn)
         time.sleep(0.3)
     elif button4 == False:
         print('BUTTON 4 PRESSED!')
-        print('Checking if Motion is running...')
-        motion = os.popen('pgrep motion')
-        pid = motion.readline()
-        motion.close()
-        sudoPass = 'raspberry'
-        if pid:
-            print('Motion already running...')
-            print('Stopping motion...')
-            command = 'sudo systemctl stop motion'
-            os.system('echo %s|sudo -S %s' % (sudoPass, command))
-            print('\nMotion stopped!')
-        else:
-            print('Starting motion...')
-            command = 'sudo systemctl start motion'
-            os.system('echo %s|sudo -S %s' % (sudoPass, command))
-            print('\nMotion started!')
+        camStatus = checkCAMstatus()
+        switchCAM(camStatus)
         time.sleep(0.3)
