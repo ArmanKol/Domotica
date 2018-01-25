@@ -105,18 +105,22 @@ while True:
         print('BUTTON 3 PRESSED!')
         time.sleep(0.3)
     elif button4 == False:
+
         print('BUTTON 4 PRESSED!')
         print('Checking if Motion is running...')
         motion = os.popen('pgrep motion')
         pid = motion.readline()
         motion.close()
+        sudoPass = 'raspberry'
         if pid:
             print('Motion already running...')
             print('Stopping motion...')
-            os.system('sudo systemctl stop motion')
-            print('Motion stopped!')
+            command = 'sudo systemctl stop motion'
+            os.system('echo %s|sudo -S %s' % (sudoPass, command))
+            print('\nMotion stopped!')
         else:
             print('Starting motion...')
-            os.system('sudo systemctl start motion')
-            print('Motion started!')
+            command = 'sudo systemctl start motion'
+            os.system('echo %s|sudo -S %s' % (sudoPass, command))
+            print('\nMotion started!')
         time.sleep(0.3)
