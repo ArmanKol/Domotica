@@ -8,6 +8,7 @@ kamerid = "1"
 noodknoopstatus = "1"
 hardwareid = "4"
 
+
 class serverconnection:
     def __init__(self, server, port):
         while True:
@@ -58,13 +59,17 @@ class serverconnection:
 def setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(True)
+    GPIO.cleanup()
     for buttonPin in buttonPins:
         GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        print('GPIO PIN ' + str(buttonPin) + ' SETUP COMPLETED')
+        print('GPIO.IN ' + str(buttonPin) + ' SETUP COMPLETED')
+    GPIO.setup(ledPin, GPIO.OUT)
     print('SETUP GPIO COMPLETED...')
 
 
 buttonPins = (5, 12, 23, 21)
+ledPin = 20
+ledOn = False
 setup()
 
 server = 'localhost'
@@ -89,9 +94,16 @@ while True:
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
+        if ledOn == False:
+            GPIO.output(ledPin, 1)
+            ledOn = True
+            print('LAMP AAN!')
+        else:
+            GPIO.output(ledPin, 0)
+            ledOn = False
+            print('LAMP UIT!')
         time.sleep(0.3)
     elif button4 == False:
-
         print('BUTTON 4 PRESSED!')
         print('Checking if Motion is running...')
         motion = os.popen('pgrep motion')
