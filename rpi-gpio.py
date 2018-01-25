@@ -5,24 +5,6 @@ import socket
 import threading
 
 
-class serverconnection:
-    def __init__(self, server, port):
-        while True:
-            try:
-                self.s = socket.socket(
-                    socket.AF_INET, socket.SOCK_STREAM)
-                self.s.connect((server, port))
-            except ConnectionRefusedError:
-                print('Geen verbinding met centrale')
-                time.sleep(10)
-                continue
-            break
-
-    def receiveMessage(self):
-        return self.s.recv(2).decode()
-
-    def sendMessage(self, message):
-        self.s.send(message.encode())
 
 
 class serverconnection:
@@ -41,8 +23,11 @@ class serverconnection:
     def receiveMessage(self):
         return self.s.recv(2).decode()
 
-    def sendMessage(self, message):
-        self.s.send(message.encode())
+    def sendMessage(self, hardwareID, status):
+        hardwareIDmessage = '{0:>05}'.format(str(hardwareID))
+        statusmessage = '{0:>05}'.format(str(status))
+        self.s.send(hardwareIDmessage.encode("4"))
+        self.s.send(statusmessage.encode("1"))
 
     def keepAlive(self):
         while True:
