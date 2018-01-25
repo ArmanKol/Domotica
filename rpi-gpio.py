@@ -5,7 +5,7 @@ import socket
 import threading
 
 kamerid = "1"
-noodknoopstatus = "1"
+status = "1"
 hardwareid = "4"
 
 
@@ -87,11 +87,11 @@ while True:
     button4 = GPIO.input(21)
     if button1 == False:
         print('BUTTON 1 PRESSED!')
-        clientsocket.sendMessage(hardwareid)
+        clientsocket.sendMessage(hardwareid, status)
         time.sleep(0.3)
     elif button2 == False:
         print('BUTTON 2 PRESSED!')
-        clientsocket.sendMessage(noodknoopstatus)
+        clientsocket.sendMessage(hardwareid, status)
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
