@@ -5,9 +5,8 @@ import socket
 import threading
 
 kamerid = "1"
-noodknoopstatus = "1"
+status = "1"
 hardwareid = "4"
-
 
 class serverconnection:
     def __init__(self, server, port):
@@ -57,6 +56,7 @@ class serverconnection:
 
 
 def setup():
+    """"setup GPIO related things"""
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(True)
     GPIO.cleanup()
@@ -67,59 +67,86 @@ def setup():
     print('SETUP GPIO COMPLETED...')
 
 
+def switchLED(pin, ledStatus):
+    """"switch led on/off"""
+    if ledStatus == False:
+        GPIO.output(pin, 1)
+        print('LAMP AAN!')
+        return True
+    else:
+        GPIO.output(pin, 0)
+        print('LAMP UIT!')
+        return False
+
+def switchCAM(currentstatus):
+    """switch camera on/off"""
+    sudoPass = 'raspberry'
+    if currentstatus:
+        print('Motion already running...')
+        print('Stopping motion...')
+        command = 'sudo systemctl stop motion'
+        os.system('echo %s|sudo -S %s' % (sudoPass, command))
+        print('\nMotion stopped!')
+    else:
+        print('Starting motion...')
+        command = 'sudo systemctl start motion'
+        os.system('echo %s|sudo -S %s' % (sudoPass, command))
+        print('\nMotion started!')
+
+def checkCAMstatus():
+    """"check status of motion daemon, return true/false"""
+    motion = os.popen('pgrep motion')
+    pid = motion.readline()
+    motion.close()
+    if pid:
+        return True
+    else:
+        return False
+
+
+# Global variables
+ledOn = False
 buttonPins = (5, 12, 23, 21)
 ledPin = 20
-ledOn = False
+# Run setup
 setup()
 
+# Socket variables
 server = 'localhost'
 port = 80
-
 clientsocket = serverconnection(server, port)
-
 keepAliveThread = threading.Thread(target=clientsocket.keepAlive)
 keepAliveThread.start()
 
 while True:
+    # Get value from buttons
     button1 = GPIO.input(5)
     button2 = GPIO.input(12)
     button3 = GPIO.input(23)
     button4 = GPIO.input(21)
+    # Check if button has been pressed
     if button1 == False:
         print('BUTTON 1 PRESSED!')
-        clientsocket.sendMessage(hardwareid)
+        clientsocket.sendMessage(hardwareid, status)
         time.sleep(0.3)
     elif button2 == False:
         print('BUTTON 2 PRESSED!')
-        clientsocket.sendMessage(noodknoopstatus)
+        clientsocket.sendMessage(hardwareid, status)
+        # if led is off it must be enabled
+        if ledOn == False:
+            ledOn = switchLED(ledPin, ledOn)
+        # if camera is off it must me enabled
+        if not checkCAMstatus():
+            switchCAM(False)
         time.sleep(0.3)
     elif button3 == False:
         print('BUTTON 3 PRESSED!')
-        if ledOn == False:
-            GPIO.output(ledPin, 1)
-            ledOn = True
-            print('LAMP AAN!')
-        else:
-            GPIO.output(ledPin, 0)
-            ledOn = False
-            print('LAMP UIT!')
+        # switch led on/off according to its last state
+        ledOn = switchLED(ledPin, ledOn)
         time.sleep(0.3)
     elif button4 == False:
         print('BUTTON 4 PRESSED!')
-        print('Checking if Motion is running...')
-        motion = os.popen('pgrep motion')
-        pid = motion.readline()
-        motion.close()
-        sudoPass = 'raspberry'
-        if pid:
-            print('Motion already running...')
-            print('Stopping motion...')
-            command = 'sudo systemctl stop motion'
-            os.system('echo %s|sudo -S %s' % (sudoPass, command))
-            print('\nMotion stopped!')
-        else:
-            print('Starting motion...')
-            command = 'sudo systemctl start motion'
-            os.system('echo %s|sudo -S %s' % (sudoPass, command))
-            print('\nMotion started!')
+        # switch camera on/off according to its last state
+        camStatus = checkCAMstatus()
+        switchCAM(camStatus)
         time.sleep(0.3)
