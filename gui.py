@@ -172,7 +172,6 @@ def noodvensterkamer1():
     noodvensterpostcodelabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Postcode: \t\t" + databasereadernood("""SELECT postcode from persoon where noodpersoonid = 1"""))
     noodvensterpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
-
 #alle labels en knoppen van noodinformatie staan hierin.
 def noodvensterkamer2():
     hoofdmenuterugknop = tk.Button(master=noodmenuframe2, width=5, text="Terug", command=toonhoofdmenuframe)
@@ -218,8 +217,17 @@ def noodvensterkamer2():
     noodvensterpostcodelabel = tk.Label(master=noodmenuframe2, background="gainsboro",text="Postcode: \t\t" + databasereadernood("""SELECT postcode from persoon where noodpersoonid = 2"""))
     noodvensterpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
-def persoontoevoegen():
-    voergegevensin = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Voer hier je gegevens in:")
+def bewonertoevoegen():
+    global voergegevensin
+    global voornaaminvoeren
+    global voornaaminvoeren
+    global tussenvoegselinvoeren
+    global achternaaminvoeren
+    global geboortedatuminvoeren
+    global geslachtinvoeren
+
+
+    voergegevensin = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Voer hier de gegevens in van de bewoner: ")
     voergegevensin.grid(row=0, column=0)
 
     voornaamlabel = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Voornaam: ")
@@ -252,44 +260,61 @@ def persoontoevoegen():
     geslachtinvoeren = tk.Entry(master=persoontoevoegenframe, background="gainsboro")
     geslachtinvoeren.grid(row=5, column=1)
 
-    telefoonnummerlabel = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="telefoonnummer: ")
+    terugknop = tk.Button(master=persoontoevoegenframe, background="gainsboro", text="Terug", command=toonhoofdmenuframe)
+    terugknop.grid(row=6, column=0)
+
+    uitvoerenknop = tk.Button(master=persoontoevoegenframe, background="gainsboro", text="Uitvoeren", command=databasewriterpersoon)
+    uitvoerenknop.grid(row=6, column=1)
+
+def noodpersoontoevoegen():
+    global telefoonnummerinvoeren
+    global postcodeinvoeren
+    global plaatsnaaminvoeren
+    global huisnummerinvoeren
+    global soortinvoeren
+
+    noodpersoongegevenslabel = tk.Label(master=noodpersoontoevoegenframe, background="gainsboro", text="Voer hier de gegevens in van de noodpersoon: ")
+    noodpersoongegevenslabel.grid(row=0, column=0)
+
+    telefoonnummerlabel = tk.Label(master=noodpersoontoevoegenframe, background="gainsboro", text="telefoonnummer: ")
     telefoonnummerlabel.grid(row=6, column=0)
 
-    telefoonnummerinvoeren = tk.Entry(master=persoontoevoegenframe, background="gainsboro")
+    telefoonnummerinvoeren = tk.Entry(master=noodpersoontoevoegenframe, background="gainsboro")
     telefoonnummerinvoeren.grid(row=6, column=1)
 
-    postcodelabel = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Postcode: ")
+    postcodelabel = tk.Label(master=noodpersoontoevoegenframe, background="gainsboro", text="Postcode: ")
     postcodelabel.grid(row=7, column=0)
 
-    postcodeinvoeren = tk.Entry(master=persoontoevoegenframe, background="gainsboro")
+    postcodeinvoeren = tk.Entry(master=noodpersoontoevoegenframe, background="gainsboro")
     postcodeinvoeren.grid(row=7, column=1)
 
-    plaatsnaamlabel = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Plaatsnaam: ")
+    plaatsnaamlabel = tk.Label(master=noodpersoontoevoegenframe, background="gainsboro", text="Plaatsnaam: ")
     plaatsnaamlabel.grid(row=8, column=0)
 
-    plaatsnaaminvoeren = tk.Entry(master=persoontoevoegenframe, background="gainsboro")
-    plaatsnaaminvoeren.grid(row=8,column=1)
+    plaatsnaaminvoeren = tk.Entry(master=noodpersoontoevoegenframe, background="gainsboro")
+    plaatsnaaminvoeren.grid(row=8, column=1)
 
-    huisnummerlabel = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Huisnummer: ")
+    huisnummerlabel = tk.Label(master=noodpersoontoevoegenframe, background="gainsboro", text="Huisnummer: ")
     huisnummerlabel.grid(row=9, column=0)
 
-    huisnummerinvoeren = tk.Entry(master=persoontoevoegenframe, background="gainsboro")
+    huisnummerinvoeren = tk.Entry(master=noodpersoontoevoegenframe, background="gainsboro")
     huisnummerinvoeren.grid(row=9, column=1)
 
-    soortlabel = tk.Label(master=persoontoevoegenframe, background="gainsboro", text="Soort: ")
+    soortlabel = tk.Label(master=noodpersoontoevoegenframe, background="gainsboro", text="Soort: ")
     soortlabel.grid(row=10, column=0)
 
-    soortinvoeren = tk.Entry(master=persoontoevoegenframe, background="gainsboro")
+    soortinvoeren = tk.Entry(master=noodpersoontoevoegenframe, background="gainsboro")
     soortinvoeren.grid(row=10, column=1)
 
-    terugknop = tk.Button(master=persoontoevoegenframe, background="gainsboro", text="Terug", command=toonhoofdmenuframe)
-    terugknop.grid(row=11, column=0)
+def databasewriternood():
+    print("a")
 
-    uitvoerenknop = tk.Button(master=persoontoevoegenframe, background="gainsboro", text="Uitvoeren")
-    uitvoerenknop.grid(row=11, column=1)
+def databasewriterpersoon():
+    conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+    cur = conn.cursor()
+    cur.execute("INSERT INTO persoon(voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht, telefoonnummer, postcode, plaatsnaam, huisnummer, soort) VALUES(%s, %s, %s, %s, %s, '','','','','')", (voornaaminvoeren.get(),tussenvoegselinvoeren.get(),achternaaminvoeren.get(), geboortedatuminvoeren.get(), geslachtinvoeren.get()));
 
-
-
+    print("H")
 
 #Zorgt ervoor dat hoofdmenu wordt geopend. Dat is het venster als de gui opstart.
 def toonhoofdmenuframe():
@@ -314,10 +339,9 @@ def toonnoodmenuframe2():
     noodmenuframe2.pack()
 
 def toonpersoontoevoegenframe():
-    persoontoevoegen()
+    bewonertoevoegen()
     hoofdmenuframe.pack_forget()
     persoontoevoegenframe.pack()
-
 
 #de verschillende frames van de gui.
 def frames():
@@ -325,6 +349,7 @@ def frames():
     global noodmenuframe1
     global noodmenuframe2
     global persoontoevoegenframe
+    global noodpersoontoevoegenframe
 
     hoofdmenuframe = tk.Frame(root)
     hoofdmenuframe.configure(background="gainsboro")
@@ -341,6 +366,10 @@ def frames():
     persoontoevoegenframe = tk.Frame(root)
     persoontoevoegenframe.configure(background="gainsboro")
     persoontoevoegenframe.pack()
+
+    noodpersoontoevoegenframe = tk.Frame(root)
+    noodpersoontoevoegenframe.configure(background="gainsboro")
+    noodpersoontoevoegenframe.pack()
 
 #database reader. Leest de noodgegevens.
 def databasereadernood(x):
