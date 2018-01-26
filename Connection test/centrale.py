@@ -23,6 +23,13 @@ class kamer:
         self.kamerid = kamerid
         cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
         self.bewoner = cur.fetchall()[0]
+        cur.execute('''SELECT typehardware FROM hardware WHERE kamerid = %s''',(self.kamerid,))
+        hardware = []
+        for hw in cur.fetchall():
+            self.hw = 0
+            hardware.append(self.hw)
+            hardware.append(hw[0])
+        print(hardware)
 
 
 def acceptIncomingConnections():
