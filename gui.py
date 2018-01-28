@@ -2,28 +2,64 @@ import tkinter as tk
 import psycopg2, socket, threading, time
 from tkinter.ttk import Separator
 
-class client_thread(threading.Thread):
-    def __init__(self, clientsocket):
-        super().__init__()
-        self.clientsocket = clientsocket
 
-    def run(self):
+class kamer:
+    def __init__(self, kamerid):
+        self.kamerid = kamerid
+        self.connected = False
+        cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
+        self.bewoner = cur.fetchall()[0]
+        cur.execute('''SELECT * FROM Persoon WHERE noodpersoonid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
+        self.noodcontacten = cur.fetchall()
+        cur.execute('''SELECT hardwareid, typehardware FROM hardware WHERE kamerid = %s''', (self.kamerid,))
+        self.hardware = []
+        for hw in cur.fetchall():
+            self.hardware.append(hardware(hw[0], hw[1]))
+
+
+    def acceptClientsocket(self, clientsocket):
+        self.clientsocket = clientsocket
+        self.listenerThread = threading.Thread(target=self.listener)
+        self.listenerThread.start()
+        self.connected = True
+
+
+    def listener(self):
         while 1:
             time.sleep(2)
             try:
-                self.clientsocket.send(b'KA')
-                message = self.clientsocket.recv(8).decode()
+                hardwareID, state = self.clientsocket.recv(5).decode().split(';', 2)
             except ConnectionResetError:
                 self.clientsocket.close()
-                break
-            '''DECODEER DE ONTVANGEN CODE EN ZORG DAT ER ACTIONS ACHTER ZITTEN'''
-        self._stop()
+                self.connected = False
+                self.listenerThread._stop()
+            databaseWriter(self.kamerid, hardwareID, state)
+
+
+class hardware:
+    def __init__(self, hardwareID, description):
+        self.hardwareID = hardwareID
+        self.description = description
+        self.state = 0
+
+    def turnOn(self):
+        self.state = 1
+
+
+    def turnOff(self):
+        self.state = 0
+
 
 def acceptIncomingConnections():
     while 1:
         (clientsocket, address) = serversocket.accept()
-        ct = client_thread(clientsocket)
-        ct.run()
+        kamerid = clientsocket.recv(2).decode()
+        kamers[int(kamerid)].acceptClientsocket(clientsocket)
+
+
+def databaseWriter(kamerid, hardwareid, state):
+    datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    cur.execute('''INSERT INTO kameractiviteiten(kamerid, hardwareid, status, datum_tijd) VALUES (%s %s %s %s)''', (kamerid, hardwareid, state, datetime))
 
 
 #Alle labels, knoppen van het hoofdmenu staan hierin.
@@ -172,6 +208,7 @@ def noodvensterkamer1():
     noodvensterpostcodelabel = tk.Label(master=noodmenuframe1, background="gainsboro", text="Postcode: \t\t" + databasereadernood("""SELECT postcode from persoon where noodpersoonid = 1"""))
     noodvensterpostcodelabel.grid(row=10, column=0, padx=5, pady=5, sticky=tk.W)
 
+
 #alle labels en knoppen van noodinformatie staan hierin.
 def noodvensterkamer2():
     hoofdmenuterugknop = tk.Button(master=noodmenuframe2, width=5, text="Terug", command=toonhoofdmenuframe)
@@ -316,6 +353,7 @@ def databasewriterpersoon():
 
     print("H")
 
+
 #Zorgt ervoor dat hoofdmenu wordt geopend. Dat is het venster als de gui opstart.
 def toonhoofdmenuframe():
     hoofdmenu()
@@ -342,6 +380,7 @@ def toonpersoontoevoegenframe():
     bewonertoevoegen()
     hoofdmenuframe.pack_forget()
     persoontoevoegenframe.pack()
+
 
 #de verschillende frames van de gui.
 def frames():
@@ -371,23 +410,17 @@ def frames():
     noodpersoontoevoegenframe.configure(background="gainsboro")
     noodpersoontoevoegenframe.pack()
 
+
 #database reader. Leest de noodgegevens.
 def databasereadernood(x):
-    try:
-        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
-    except:
-        print("I am unable to connect to the database")
-
-    cur = conn.cursor()
     cur.execute(x)
     rows = cur.fetchall()
     for row in rows:
         informatie = row[0]
-
     if informatie == None:
         informatie = "-"
-
     return informatie
+
 
 #dit zorgt ervoor dat de lichten van rood naar groen kunnen worden veranderd mits de status op 1 staat.
 #De status moet opgevraagd worden met de sockets, database?
@@ -411,19 +444,36 @@ def lichtrood():
     elif kamer2roodnoodlicht["background"] == "red":
         kamer2roodnoodlicht["background"]="green"
 
+
 #De functie om de gui draaiend te houden.
 def startgui():
     global root
-
     root = tk.Tk()
     root.title("Domotica systeem")
     root.configure(background="white")
     root.resizable(False, False)
-
     frames()
     toonhoofdmenuframe()
 
     root.mainloop()
+
+
+while 1:
+    # Maak een verbinding met de database. De rest van het programma wordt pas uitgevoerd zodra deze verbinding gelegd is.
+    try:
+        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+        cur = conn.cursor()
+    except:
+        print("Unable to connect to the database")
+        continue
+    break
+
+
+# Haalt alle gegevens van de kamers op en slaat deze op in Objecten
+cur.execute('''SELECT kamerid FROM kamer''')
+kamers = dict()
+for kmr in cur.fetchall():
+    kamers[kmr[0]] = kamer(kmr[0])
 
 
 serversocket = socket.socket(
@@ -431,7 +481,9 @@ serversocket = socket.socket(
 serversocket.bind(('', 80))
 serversocket.listen(5)
 
+
 incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
+incomingConnectionsThread.daemon = True
 incomingConnectionsThread.start()
 
 
