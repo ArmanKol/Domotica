@@ -1,4 +1,4 @@
-import time, os, socket, threading
+import time, os, socket, threading, psycopg2
 #import RPi.GPIO as GPIO
 
 
@@ -45,7 +45,11 @@ class hardwareButton:
     def __init__(self, hardwareID, gpioPin):
         self.hardwareID = hardwareID
         self.gpioPin = gpioPin
-        self.state = 0
+        cur.execute('''SELECT status FROM kameractiviteit WHERE activiteitid = (SELECT MAX(activiteitid) FROM kameractiviteit WHERE hardwareid = %s)''', (self.hardwareID, ))
+        if cur.fetchall()[0] == 0:
+            self.turnOff()
+        else:
+            self.turnOn()
 
 
     def isButtonPressed(self):
@@ -118,6 +122,16 @@ ledPin = 20
 # Run setup
 setup()
 
+while 1:
+    # Maak een verbinding met de database. De rest van het programma wordt pas uitgevoerd zodra deze verbinding gelegd is.
+    try:
+        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
+        cur = conn.cursor()
+    except:
+        print("Unable to connect to the database")
+        continue
+    break
+
 
 # Socket variables
 server = 'localhost'
@@ -158,7 +172,7 @@ while True:
         elif lightButton.state == False:
             lightButton.turnOn()
 
-        # GPIO.output(lightButton.gpioPin, lightButton.state)
+        GPIO.output(lightButton.gpioPin, lightButton.state)
         time.sleep(0.3)
     elif button == 4:
         print('Cameraknop is ingedrukt!!')
