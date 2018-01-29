@@ -426,13 +426,13 @@ def startgui():
     root.mainloop()
 
 
-serversocket = socket.socket(
-    socket.AF_INET, socket.SOCK_STREAM)
-serversocket.bind(('', 80))
-serversocket.listen(5)
+#serversocket = socket.socket(
+#    socket.AF_INET, socket.SOCK_STREAM)
+#serversocket.bind(('', 80))
+#serversocket.listen(5)
 
-incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
-incomingConnectionsThread.start()
+#incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
+#incomingConnectionsThread.start()
 
 
 startgui()
