@@ -1,5 +1,5 @@
 import time, os, socket, threading
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 kamerid = 1
@@ -49,8 +49,7 @@ class hardwareButton:
 
 
     def isButtonPressed(self):
-        return #GPIO.input(self.gpioPin) == False
-
+        return not GPIO.input(self.gpioPin)
 
     def turnOn(self):
         self.state = 1
@@ -68,13 +67,13 @@ class hardwareButton:
 
 def setup():
     """"setup GPIO related things"""
-    #GPIO.setmode(GPIO.BCM)
-    #GPIO.setwarnings(True)
-    #GPIO.cleanup()
-    #for buttonPin in buttonPins:
-    #    GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    #    print('GPIO.IN ' + str(buttonPin) + ' SETUP COMPLETED')
-    #GPIO.setup(ledPin, GPIO.OUT)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(True)
+    GPIO.cleanup()
+    for buttonPin in buttonPins:
+        GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        print('GPIO.IN ' + str(buttonPin) + ' SETUP COMPLETED')
+    GPIO.setup(ledPin, GPIO.OUT)
     print('SETUP GPIO COMPLETED...')
 
 
@@ -120,14 +119,14 @@ setup()
 
 
 # Socket variables
-server = 'localhost'
+server = '145.89.205.161'
 port = 80
 serverconnection = serversocket(server, port)
 
-keepAliveThread = threading.Thread(target=serverconnection.keepAlive, daemon=True)
+keepAliveThread = threading.Thread(target=serverconnection.keepAlive)
 keepAliveThread.start()
 
-
+'''
 while True:
     # Check if button has been pressed
     print('1 = Reset Noodknop/n2 = Noodknop/n3 = Lichtknop/n 4=Cameraknop/n/n)')
@@ -158,7 +157,7 @@ while True:
         elif lightButton.state == False:
             lightButton.turnOn()
 
-        # GPIO.output(lightButton.gpioPin, lightButton.state)
+        GPIO.output(lightButton.gpioPin, lightButton.state)
         time.sleep(0.3)
     elif button == 4:
         print('Cameraknop is ingedrukt!!')
@@ -171,8 +170,8 @@ while True:
         camStatus = checkCAMstatus()
         # switchCAM(camStatus)
         time.sleep(0.3)
-
 '''
+while True:
     if resetNoodButton.isButtonPressed() and noodButton.state:
         print('Resetknop is ingedrukt, EN de noodknop is ingedrukt op het moment!')
         print('Het noodalarm wordt gereset')
@@ -201,7 +200,7 @@ while True:
         elif lightButton.state == False:
             lightButton.turnOn()
 
-        #GPIO.output(lightButton.gpioPin, lightButton.state)
+        GPIO.output(20, lightButton.state)
         time.sleep(0.3)
     elif cameraButton.isButtonPressed():
         print('Cameraknop is ingedrukt!!')
@@ -214,4 +213,3 @@ while True:
         camStatus = checkCAMstatus()
         #switchCAM(camStatus)
         time.sleep(0.3)
-    '''
