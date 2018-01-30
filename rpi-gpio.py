@@ -117,99 +117,54 @@ ledPin = 20
 # Run setup
 setup()
 
-
 # Socket variables
-server = '145.89.205.161'
+server = '192.168.1.20'
 port = 80
 serverconnection = serversocket(server, port)
-
 keepAliveThread = threading.Thread(target=serverconnection.keepAlive)
 keepAliveThread.start()
 
-'''
-while True:
-    # Check if button has been pressed
-    print('1 = Reset Noodknop/n2 = Noodknop/n3 = Lichtknop/n 4=Cameraknop/n/n)')
-    button = eval(input(''))
-    if button == 1 and noodButton.state:
-        print('Resetknop is ingedrukt, EN de noodknop is ingedrukt op het moment!')
-        print('Het noodalarm wordt gereset')
 
-        """             ACTIES HIER             """
-
-        time.sleep(0.3)
-    elif button == 2:
-        print('Noodknop is ingedrukt!!!')
-        # if led is off it must be enabled
-        if lightButton.state == False:
-            """             ACTIES HIER             """
-
-        # if camera is off it must me enabled
-        if cameraButton.state == False:
-            """             ACTIES HIER             """
-
-        time.sleep(0.3)
-    elif button == 3:
-        print('Lichtknop is ingedrukt!')
-        # switch led on/off according to its last state
-        if lightButton.state:
-            lightButton.turnOff()
-        elif lightButton.state == False:
-            lightButton.turnOn()
-
-        GPIO.output(lightButton.gpioPin, lightButton.state)
-        time.sleep(0.3)
-    elif button == 4:
-        print('Cameraknop is ingedrukt!!')
-        # switch camera on/off according to its last state
-        if cameraButton.state:
-            cameraButton.turnOff()
-        if cameraButton.state == False:
-            cameraButton.turnOn()
-
-        camStatus = checkCAMstatus()
-        # switchCAM(camStatus)
-        time.sleep(0.3)
-'''
 while True:
     if resetNoodButton.isButtonPressed() and noodButton.state:
-        print('Resetknop is ingedrukt, EN de noodknop is ingedrukt op het moment!')
         print('Het noodalarm wordt gereset')
-
-        """             ACTIES HIER             """
-
+        noodButton.turnOff()
         time.sleep(0.3)
+
     elif noodButton.isButtonPressed():
         print('Noodknop is ingedrukt!!!')
-        # if led is off it must be enabled
         if lightButton.state == False:
-
-            """             ACTIES HIER             """
-
-        # if camera is off it must me enabled
+            # if led is off it must be enabled
+            print('Licht wordt ingeschakeld')
+            lightButton.turnOn()
+            GPIO.output(20, lightButton.state)
         if cameraButton.state == False:
-
-            """             ACTIES HIER             """
-
+            # if camera is off it must me enabled
+            print('Camera wordt ingeschakeld')
+            turnCameraOn()
+        noodButton.turnOn()
         time.sleep(0.3)
+
     elif lightButton.isButtonPressed():
-        print('Lichtknop is ingedrukt!')
         # switch led on/off according to its last state
         if lightButton.state:
+            print('Licht wordt uitgeschakeld')
             lightButton.turnOff()
         elif lightButton.state == False:
+            print('Licht wordt ingeschakeld')
             lightButton.turnOn()
 
         GPIO.output(20, lightButton.state)
         time.sleep(0.3)
+
     elif cameraButton.isButtonPressed():
-        print('Cameraknop is ingedrukt!!')
         # switch camera on/off according to its last state
         if cameraButton.state:
+            print('Camera wordt uitgeschakeld')
             cameraButton.turnOff()
-        if cameraButton.state == False:
+            turnCameraOff()
+        elif cameraButton.state == False:
+            print('Camera wordt ingeschakeld')
             cameraButton.turnOn()
-
-        camStatus = checkCAMstatus()
-        #switchCAM(camStatus)
+            turnCameraOn()
         time.sleep(0.3)
