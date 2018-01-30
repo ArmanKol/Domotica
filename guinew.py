@@ -117,6 +117,8 @@ class domoticaWindow:
         tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue', text='Overzicht', command=self.callRoomOverview).grid(column=0,row=0, sticky='news')
         tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue',text='DB Lezen', command=self.callDataReadings).grid(column=1,row=0, sticky='news')
         tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue',text='DB Schrijven', command=self.callDatamanipulation).grid(column=2,row=0, sticky='news')
+        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue', text='DB Schrijven',
+                  command=self.callDatamanipulation).grid(column=2, row=0, sticky='news')
 
     def buildBranding(self):
         image = Image.open('.\img\illuminati33.gif')
@@ -146,13 +148,13 @@ class domoticaWindow:
     def callDataReadings(self):
         'Calls the customers GUI'
         self.resetContent()
-        print('datareading')
+        dataReadings(self.contentFrame)
         #guiCustomers.customers(self.master)
 
     def callDatamanipulation(self):
         'calls the products GUI'
         self.resetContent()
-        print('datawritings')
+        datamanipulations(self.contentFrame).keuzeScherm()
         #guiProducts.productMain(self.master)
 
     def resetContent(self):
@@ -204,7 +206,190 @@ class dataReadings:
 
 class datamanipulations:
     def __init__(self, master):
-        pass
+        self.master = master
+
+    def keuzeScherm(self):
+        self.resetContent()
+        tk.Button(self.master, text="Persoon toevoegen", font=20, command=self.pToevoegen).grid(row=1, column=0, sticky='news')
+        tk.Button(self.master, text="Persoon verwijderen", font=20, command=self.pVerwijderen).grid(row=1, column=1, sticky='nsew')
+        tk.Button(self.master, text="Persoon aan kamer toevoegen", font=20, command=self.pkamerToevoegen).grid(row=1, column=2, sticky='nsew')
+        tk.Button(self.master, text="Persoon uit kamer halen", font=20, command=self.pkamerVerwijderen).grid(row=1, column=3, sticky='nsew')
+
+    def pToevoegen(self):
+        self.resetContent()
+        tk.Label(self.master, text="Voer hier de gegevens van de nieuwe bewoner in").grid(row=1, column=0, sticky='nsew')
+        tk.Label(self.master, text="Voornaam: ").grid(row=2, column=0, sticky='nsew')
+        tk.Label(self.master, text="Tussenvoegsel").grid(row=3, column=0, sticky='nsew')
+        tk.Label(self.master, text="Achternaam: ").grid(row=4, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geboortedatum(YYYY-MM-DD): ").grid(row=5, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geslacht: ").grid(row=6, column=0, sticky='nsew')
+
+        self.p_naamEntry = tk.Entry(self.master)
+        self.p_tussenvoegselEntry = tk.Entry(self.master)
+        self.p_achternaamEntry = tk.Entry(self.master)
+        self.p_geboortedatumEntry = tk.Entry(self.master)
+        self.p_geslachtEntry = tk.Entry(self.master)
+
+        self.p_naamEntry.grid(row=2, column=1, sticky='nsew')
+        self.p_tussenvoegselEntry.grid(row=3, column=1, sticky='nsew')
+        self.p_achternaamEntry.grid(row=4, column=1, sticky='nsew')
+        self.p_geboortedatumEntry.grid(row=5, column=1, sticky='nsew')
+        self.p_geslachtEntry.grid(row=6, column=1, sticky='nsew')
+
+        tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=7, column=0, sticky='nsew', columnspan=1)
+        tk.Button(self.master, text="Verder", command=self.p_databasewriter).grid(row=7, column=1, sticky='nsew', columnspan=2)
+
+    def npToevoegen(self):
+        self.resetContent()
+
+        tk.Label(self.master, text="Voer hier de noodgegevens van de bewoner in").grid(row=0, column=0, sticky='nsew')
+        tk.Label(self.master, text="Voornaam: ").grid(row=1, column=0, sticky='nsew')
+        tk.Label(self.master, text="Tussenvoegsel: ").grid(row=2, column=0, sticky='nsew')
+        tk.Label(self.master, text="Achternaam: ").grid(row=3, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geboortedatum(YYYY-MM-DD): ").grid(row=4, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geslacht: ").grid(row=5, column=0, sticky='nsew')
+        tk.Label(self.master, text="Telefoonnummer: ").grid(row=6, column=0, sticky='nsew')
+        tk.Label(self.master, text="Postcode: ").grid(row=7, column=0, sticky='nsew')
+        tk.Label(self.master, text="Plaatsnaam: ").grid(row=8, column=0, sticky='nsew')
+        tk.Label(self.master, text="Huisnummer: ").grid(row=9, column=0, sticky='nsew')
+        tk.Label(self.master, text="Soort: ").grid(row=10, column=0, sticky='nsew')
+
+        self.np_naamEntry = tk.Entry(self.master)
+        self.np_tussenvoegselEntry = tk.Entry(self.master)
+        self.np_achternaamEntry = tk.Entry(self.master)
+        self.np_geboortedatumEntry = tk.Entry(self.master)
+        self.np_geslachtEntry = tk.Entry(self.master)
+        self.np_telefoonnummerEntry = tk.Entry(self.master)
+        self.np_postcodeEntry = tk.Entry(self.master)
+        self.np_plaatsnaamEntry = tk.Entry(self.master)
+        self.np_huisnummerEntry = tk.Entry(self.master)
+        self.np_soortEntry = tk.Entry(self.master)
+
+        self.np_naamEntry.grid(row=1, column=1)
+        self.np_tussenvoegselEntry.grid(row=2, column=1)
+        self.np_achternaamEntry.grid(row=3, column=1)
+        self.np_geboortedatumEntry.grid(row=4, column=1)
+        self.np_geslachtEntry.grid(row=5, column=1)
+        self.np_telefoonnummerEntry.grid(row=6, column=1)
+        self.np_postcodeEntry.grid(row=7, column=1)
+        self.np_plaatsnaamEntry.grid(row=8, column=1)
+        self.np_huisnummerEntry.grid(row=9, column=1)
+        self.np_soortEntry.grid(row=10, column=1)
+
+        tk.Button(self.master, text="Uitvoeren", command=self.np_databasewriter).grid(row=11, column=0, sticky='nsew', columnspan=2)
+
+    def pVerwijderen(self):
+        self.resetContent()
+
+        tk.Label(self.master, text="Vul hier gegevens in van de persoon die je wilt verwijderen").grid(row=0, column=0, sticky='nsew')
+        tk.Label(self.master, text="Voornaam: ").grid(row=1, column=0, sticky='nsew')
+        tk.Label(self.master, text="Achternaam: ").grid(row=2, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geboortedatum: ").grid(row=3, column=0, sticky='nsew')
+
+        self.pv_naamEntry = tk.Entry(self.master)
+        self.pv_achternaamEntry = tk.Entry(self.master)
+        self.pv_geboortedatumEntry = tk.Entry(self.master)
+
+        self.pv_naamEntry.grid(row=1, column=1, sticky='nsew')
+        self.pv_achternaamEntry.grid(row=2, column=1, sticky='nsew')
+        self.pv_geboortedatumEntry.grid(row=3, column=1, sticky='nsew')
+
+        tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=4, column=0, sticky='nsew', columnspan=1)
+        tk.Button(self.master, text="Uitvoeren", command=self.pv_databaseremove).grid(row=4, column=1, sticky='nsew', columnspan=2)
+
+    def pkamerToevoegen(self):
+        self.resetContent()
+
+        tk.Label(self.master, text="Vul hier de gegevens van de persoon in ").grid(row=0, column=0, sticky='nsew')
+        tk.Label(self.master, text="Kamerid: ").grid(row=1, column=0, sticky='nsew')
+        tk.Label(self.master, text="Voornaam: ").grid(row=2, column=0, sticky='nsew')
+        tk.Label(self.master, text="Achternaam: ").grid(row=3, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geboortedatum: ").grid(row=4, column=0, sticky='nsew')
+
+        self.pinkamer_kameridEntry = tk.Entry(self.master)
+        self.pinkamer_voornaamEntry = tk.Entry(self.master)
+        self.pinkamer_achternaamEntry = tk.Entry(self.master)
+        self.pinkamer_geboortedatumEntry = tk.Entry(self.master)
+
+        self.pinkamer_kameridEntry.grid(row=1, column=1, sticky='nsew')
+        self.pinkamer_voornaamEntry.grid(row=2, column=1, sticky='nsew')
+        self.pinkamer_achternaamEntry.grid(row=3, column=1, sticky='nsew')
+        self.pinkamer_geboortedatumEntry.grid(row=4, column=1, sticky='nsew')
+
+        tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=6, column=1, sticky='nsew', columnspan=1)
+        tk.Button(self.master, text="Uitvoeren", command=self.pinkamer_databasewriter).grid(row=5, column=1, sticky='nsew', columnspan=1)
+
+    def pkamerVerwijderen(self):
+        self.resetContent()
+
+        tk.Label(self.master, text="Vul hier de gegevens van de persoon in ").grid(row=0, column=0, sticky='nsew')
+        tk.Label(self.master, text="Kamerid: ").grid(row=1, column=0, sticky='nsew')
+        tk.Label(self.master, text="Voornaam: ").grid(row=2, column=0, sticky='nsew')
+        tk.Label(self.master, text="Achternaam: ").grid(row=3, column=0, sticky='nsew')
+        tk.Label(self.master, text="Geboortedatum: ").grid(row=4, column=0, sticky='nsew')
+
+        self.puitkamer_kameridEntry = tk.Entry(self.master)
+        self.puitkamer_voornaamEntry = tk.Entry(self.master)
+        self.puitkamer_achternaamEntry = tk.Entry(self.master)
+        self.puitkamer_geboortedatumEntry = tk.Entry(self.master)
+
+        self.puitkamer_kameridEntry.grid(row=1, column=1, sticky='nsew')
+        self.puitkamer_voornaamEntry.grid(row=2, column=1, sticky='nsew')
+        self.puitkamer_achternaamEntry.grid(row=3, column=1, sticky='nsew')
+        self.puitkamer_geboortedatumEntry.grid(row=4, column=1, sticky='nsew')
+
+        tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=6, column=1, sticky='nsew', columnspan=1)
+        tk.Button(self.master, text="Uitvoeren", command=self.puitkamer_databasewriter).grid(row=5, column=1,
+                                                                                            sticky='nsew', columnspan=1)
+
+    def puitkamer_databasewriter(self):
+        cur.execute("update kamer set persoonsid = NULL where kamerid = %s",
+                    (self.puitkamer_kameridEntry.get()))
+        conn.commit()
+        self.keuzeScherm()
+
+    def pinkamer_databasewriter(self):
+        cur.execute("select persoonsid from persoon where voornaam = %s and achternaam = %s", (self.pinkamer_voornaamEntry.get(), self.pinkamer_achternaamEntry.get()))
+        persoonid = cur.fetchall()[0][0]
+
+
+        cur.execute("update kamer set persoonsid = %s where kamerid = %s",
+                    (persoonid, self.pinkamer_kameridEntry.get()))
+        conn.commit()
+        self.keuzeScherm()
+
+    def pv_databaseremove(self):
+        cur.execute("delete from persoon where voornaam = %s and achternaam = %s and geboortedatum = %s",
+                    (self.pv_naamEntry.get(), self.pv_achternaamEntry.get(), self.pv_geboortedatumEntry.get()))
+        conn.commit()
+
+        self.keuzeScherm()
+
+    def p_databasewriter(self):
+        cur.execute("INSERT INTO persoon(voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht) "
+                    "VALUES(%s, %s, %s, %s, %s)", (self.p_naamEntry.get(), self.p_tussenvoegselEntry.get(), self.p_achternaamEntry.get(),
+                                                   self.p_geboortedatumEntry.get(), self.p_geslachtEntry.get()))
+        conn.commit()
+        self.npToevoegen()
+
+    def np_databasewriter(self):
+
+        cur.execute("select * from persoon order by persoonsid desc limit 1")
+        noodpersoonid = cur.fetchall()[0][0]
+
+        cur.execute(
+            "INSERT INTO persoon(voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht, telefoonnummer, postcode, plaatsnaam, huisnummer, noodpersoonid, soort) "
+            "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            (self.np_naamEntry.get(), self.np_tussenvoegselEntry.get(), self.np_achternaamEntry.get(), self.np_geboortedatumEntry.get(), self.np_geslachtEntry.get(),
+             self.np_telefoonnummerEntry.get(), self.np_postcodeEntry.get(), self.np_plaatsnaamEntry.get(), self.np_huisnummerEntry.get(), noodpersoonid,
+             self.np_soortEntry.get()));
+
+        conn.commit()
+        self.keuzeScherm()
+
+    def resetContent(self):
+        for widget in self.master.winfo_children():
+            widget.destroy()
 
 
 while 1:
@@ -239,6 +424,7 @@ incomingConnectionsThread.start()
 root = tk.Tk()
 root.title("Domotica systeem")
 root.protocol("WM_DELETE_WINDOW", on_closing)
+
 
 my_gui = domoticaWindow(root)
 root.mainloop()
