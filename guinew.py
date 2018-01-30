@@ -114,9 +114,9 @@ class domoticaWindow:
         for c in range(3):  #   Pre-configures weight of all columns, so they will be sized evenly when the screen resizes
             self.menuFrame.columnconfigure(c, weight=1)
         font = ('Arial Black', 15)
-        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue', text='Overzicht', command=self.callRoomOverview).grid(column=0,row=0, sticky='news')
-        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue',text='DB Lezen', command=self.callDataReadings).grid(column=1,row=0, sticky='news')
-        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='lightblue',text='DB Schrijven', command=self.callDatamanipulation).grid(column=2,row=0, sticky='news')
+        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='white', text='Overzicht', command=self.callRoomOverview).grid(column=0,row=0, sticky='news')
+        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='white',text='DB Lezen', command=self.callDataReadings).grid(column=1,row=0, sticky='news')
+        tk.Button(self.menuFrame, width=50, height=2, font=font, bg='white',text='DB Schrijven', command=self.callDatamanipulation).grid(column=2,row=0, sticky='news')
 
     def buildBranding(self):
         image = Image.open('.\img\illuminati33.gif')
@@ -143,10 +143,10 @@ class domoticaWindow:
         self.resetContent()
         roomOverview(self.contentFrame)
 
-    def callDataReadings(self):
+    def callDataReadings(self, ):
         'Calls the customers GUI'
         self.resetContent()
-        print('datareading')
+        dataReadings(self.contentFrame)
         #guiCustomers.customers(self.master)
 
     def callDatamanipulation(self):
@@ -199,7 +199,18 @@ class singleRoom(tk.Frame):
 
 class dataReadings:
     def __init__(self, master):
-        pass
+        self.master = master
+        cur = conn.cursor()
+        cur.execute('''SELECT ActiviteitID, KamerID, HardwareID, Status, Datum_tijd  FROM kameractiviteit ORDER BY ActiviteitID DESC''')
+        rows = cur.fetchall()
+        tk.Label(self.master, text= 'Kameractiviteit log gegevens:', font=20).grid(row=0, column=0)
+        tk.Label(self.master, text= 'ActiviteitID           -        KamerID      -        HardwareID       -        status        -      Datum_tijd', font=20).grid(row=0, column=1)
+        listbox = tk.Listbox(self.master, width=125, height=50)
+        listbox.grid(row=1, column=1)
+        for row in rows:
+            x = ('                                  {}                        -                      {}               -                      {}                        -                {}                 -        {}'.format(row[0],row[1],row[2],row[3],row[4]))
+            listbox.insert(tk.END, x)
+
 
 
 class datamanipulations:
