@@ -118,7 +118,7 @@ ledPin = 20
 setup()
 
 # Socket variables
-server = '192.168.1.20'
+server = '145.89.205.161'
 port = 80
 serverconnection = serversocket(server, port)
 keepAliveThread = threading.Thread(target=serverconnection.keepAlive)

@@ -7,9 +7,17 @@ from PIL import Image, ImageTk
 class kamer:
     def __init__(self, kamerid):
         self.kamerid = kamerid
+        print(self.kamerid)
         self.connected = False
         cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
-        self.bewoner = ' '.join(item for item in cur.fetchone() if item)
+        result = cur.fetchall()
+        if len(result) > 0:
+            if result[0][1] == None:
+                self.bewoner = '{} {}'.format(result[0], result[2])
+            else:
+                self.bewoner = ' '.join(result[0])
+        else:
+            self.bewoner = 'Onbewoond'
         cur.execute('''SELECT * FROM Persoon WHERE noodpersoonid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
         self.noodcontacten = cur.fetchall()
         cur.execute('''SELECT hardwareid, typehardware FROM hardware WHERE kamerid = %s''', (self.kamerid,))
@@ -197,7 +205,6 @@ class singleRoom(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.config(width=100, bd=5, relief='raised', padx=1)
         tk.Label(self, text="Kamer "+str(room.kamerid), font=("Arial", 16), width=15).grid(row=0, column=0, columnspan=2)
-        print(room.bewoner)
         r = 1
         tk.Label(self, text=room.bewoner).grid(row=r, column=0, columnspan=2)
         r += 1
