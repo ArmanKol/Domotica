@@ -87,7 +87,7 @@ def turnCameraOff():
 
 def turnCameraOn():
     print('Starting motion...')
-    command = 'sudo systemctl start motion'
+    command = 'sudo motion'
     os.system('echo %s|sudo -S %s' % ('raspberry', command))
     print('\nMotion started!')
 
