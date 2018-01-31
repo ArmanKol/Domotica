@@ -7,18 +7,17 @@ from PIL import Image, ImageTk
 class kamer:
     def __init__(self, kamerid):
         self.kamerid = kamerid
-        #print(self.kamerid)
         self.connected = False
         cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
         result = cur.fetchall()
         if len(result) > 0:
             if result[0][1] == None:
-                self.bewoner = '{} {}'.format(result[0], result[2])
+                self.bewoner = '{} {}'.format(result[0][0], result[0][2])
             else:
                 self.bewoner = ' '.join(result[0])
         else:
             self.bewoner = 'Onbewoond'
-        cur.execute('''SELECT * FROM Persoon WHERE noodpersoonid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
+        cur.execute('''SELECT soort, voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht, telefoonnummer, postcode, plaatsnaam, huisnummer FROM Persoon WHERE noodpersoonid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
         self.noodcontacten = cur.fetchall()
         cur.execute('''SELECT hardwareid, typehardware FROM hardware WHERE kamerid = %s''', (self.kamerid,))
         self.hardware = dict()
@@ -115,7 +114,7 @@ class domoticaWindow:
 
         self.menuFrame.grid(column=1,row=0,columnspan=2, sticky='new')
         self.contentFrame.grid(column=1,row=1, sticky='news')
-        self.brandingFrame.grid(column=2,row=1, sticky='news')
+        self.brandingFrame.grid(column=2,row=1, sticky='nes')
         self.footerFrame.grid(column=1,row=2,columnspan=2, sticky='ews')
 
         self.buildMenu()
@@ -136,14 +135,14 @@ class domoticaWindow:
         image = Image.open('.\img\illuminati33.gif')
         photo = ImageTk.PhotoImage(image)
 
-        label = tk.Label(self.brandingFrame, image=photo)
+        label = tk.Label(self.brandingFrame, image=photo, justify='right')
         label.image = photo  # keep a reference!
         label.pack()
 
         imageV = Image.open('.\img\Vision.gif')
         photoV = ImageTk.PhotoImage(imageV)
 
-        labelV = tk.Label(self.brandingFrame, image=photoV)
+        labelV = tk.Label(self.brandingFrame, image=photoV, justify='right')
         label.imageV = photoV  # keep a reference!
         labelV.pack()
 
@@ -239,16 +238,47 @@ def openStream(ipaddress):
     ie = webbrowser.get(webbrowser.iexplore)
     ie.open(url)
 
-def viewNoodcontacten(noodcontacten):
-    print(noodcontacten)
-    cur = conn.cursor()
-    cur.execute('''SELECT voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht, telefoonnummer, postcode, plaatsnaam, huisnummer, soort FROM persoon''')
 
+def viewNoodcontacten(noodcontacten):
     window = tk.Toplevel()
     window.wm_title("Noodcontactgegevens")
 
-    tk.Label(window, text=noodcontacten )
+    if len(noodcontacten) > 0:
+        r = 1
+        c = 0
+        for contact in noodcontacten:
+            singleNoodcontact(window, contact).grid(row=r, column=c)
+            c += 1
+            if c > 3:
+                c = 0
+                r += 1
+    else:
+        tk.Label(window, text='Geen noodcontacten beschikbaar', font=("Arial", 16)).grid(row=2, column=2)
+
     tk.Button(window, text="Terug", command=window.destroy).grid(row=3, column=2)
+
+
+class singleNoodcontact(tk.Frame):
+    def __init__(self, parent, noodcontact):
+        tk.Frame.__init__(self, parent)
+        self.config(width=100, bd=5, relief='raised', padx=1)
+
+        tk.Label(self, text="Relatie", font=("Arial", 12), width=15, anchor='w').grid(row=0, column=0)
+        tk.Label(self, text="Voornaam", font=("Arial", 12), width=15, anchor='w').grid(row=1, column=0)
+        tk.Label(self, text="Tussenvoegsel", font=("Arial", 12), width=15, anchor='w').grid(row=2, column=0)
+        tk.Label(self, text="Achternaam", font=("Arial", 12), width=15, anchor='w').grid(row=3, column=0)
+        tk.Label(self, text="Geboortedatum", font=("Arial", 12), width=15, anchor='w').grid(row=4, column=0)
+        tk.Label(self, text="Geslacht", font=("Arial", 12), width=15, anchor='w').grid(row=5, column=0)
+        tk.Label(self, text="Telefoonnummer", font=("Arial", 12), width=15, anchor='w').grid(row=6, column=0)
+        tk.Label(self, text="Postcode", font=("Arial", 12), width=15, anchor='w').grid(row=7, column=0)
+        tk.Label(self, text="Huisnummer", font=("Arial", 12), width=15, anchor='w').grid(row=8, column=0)
+        tk.Label(self, text="Plaats", font=("Arial", 12), width=15, anchor='w').grid(row=9, column=0)
+
+        r = 0
+        for eigenschap in noodcontact:
+            tk.Label(self, text=eigenschap, font=("Arial", 12), width=15, anchor='w').grid(row=r, column=1)
+            r += 1
+
 
 
 class dataReadings:
@@ -487,6 +517,8 @@ incomingConnectionsThread.start()
 root = tk.Tk()
 root.title("Domotica systeem")
 root.protocol("WM_DELETE_WINDOW", on_closing)
+
+root.state('zoomed')
 
 my_gui = domoticaWindow(root)
 root.mainloop()
