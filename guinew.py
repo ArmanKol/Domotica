@@ -234,9 +234,11 @@ class singleRoom(tk.Frame):
 
 
 def openStream(ipaddress):
+    google_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+    webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(google_path))
+    #ipaddress = "145.89.157.189:8081"
     url = "http://{}:8081".format(ipaddress)
-    ie = webbrowser.get(webbrowser.iexplore)
-    ie.open(url)
+    webbrowser.get(using='chrome').open(url)
 
 
 def viewNoodcontacten(noodcontacten):
