@@ -1,5 +1,5 @@
 import tkinter as tk
-import psycopg2, socket, threading, time
+import psycopg2, socket, threading, time, webbrowser
 from tkinter.ttk import Separator
 from PIL import Image, ImageTk
 
@@ -235,7 +235,9 @@ class singleRoom(tk.Frame):
 
 
 def openStream(ipaddress):
-    print(ipaddress)
+    url = "http://{}:8081".format(ipaddress)
+    ie = webbrowser.get(webbrowser.iexplore)
+    ie.open(url)
 
 def viewNoodcontacten(noodcontacten):
     print(noodcontacten)
