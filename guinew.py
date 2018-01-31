@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 class kamer:
     def __init__(self, kamerid):
         self.kamerid = kamerid
-        print(self.kamerid)
+        #print(self.kamerid)
         self.connected = False
         cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
         result = cur.fetchall()
@@ -241,6 +241,14 @@ def openStream(ipaddress):
 
 def viewNoodcontacten(noodcontacten):
     print(noodcontacten)
+    cur = conn.cursor()
+    cur.execute('''SELECT voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht, telefoonnummer, postcode, plaatsnaam, huisnummer, soort FROM persoon''')
+
+    window = tk.Toplevel()
+    window.wm_title("Noodcontactgegevens")
+
+    tk.Label(window, text=noodcontacten )
+    tk.Button(window, text="Terug", command=window.destroy).grid(row=3, column=2)
 
 
 class dataReadings:
