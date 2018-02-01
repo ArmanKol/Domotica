@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 class kamer:
     def __init__(self, kamerid):
         self.kamerid = kamerid
-        self.connected = False
+        self.connected = 0
         cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
         result = cur.fetchall()
         if len(result) > 0:
@@ -29,8 +29,9 @@ class kamer:
         self.clientsocket = clientsocket
         self.listenerThread = threading.Thread(target=self.listener)
         self.listenerThread.start()
-        self.connected = True
+        self.connected = 2
         self.ipaddress = ipaddress
+        threading.Thread(target=self.keepAlive).start()
         my_gui.refreshContent()
 
 
@@ -40,25 +41,25 @@ class kamer:
                 message = self.clientsocket.recv(5).decode().split(';', 2)
                 hardwareID = int(message[0])
                 state = int(message[1])
-                print('message is {}'.format(message))
             except ConnectionResetError:
-                print('error')
                 self.clientsocket.close()
                 self.connected = False
                 self.listenerThread._stop()
             if hardwareID == 0:
-                # SET KEEPALIVE THINGY
+                self.connected = 2
                 continue
             else:
                 self.hardware[hardwareID].setState(state)
                 databaseWriter(self.kamerid, hardwareID, state)
             my_gui.refreshContent()
 
-    def keepAliveTimeout(self):
-        pass
 
     def keepAlive(self):
-        pass
+        while True:
+            time.sleep(600)
+            if self.connected == 2:
+                self.connected = 1
+                my_gui.refreshContent()
 
 
 class hardware:
@@ -79,17 +80,12 @@ def on_closing():
     root.destroy()
 
 
-def acceptIncomingConnections():
-    while 1:
-        (clientsocket, address) = serversocket.accept()
-        kamerid = clientsocket.recv(2).decode()
-        kamers[int(kamerid)].acceptClientsocket(clientsocket, address[0])
-
-
 def databaseWriter(kamerid, hardwareid, state):
     datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     cur.execute('''INSERT INTO kameractiviteit(kamerid, hardwareid, status, datum_tijd) VALUES (%s, %s, %s, %s)''', (kamerid, hardwareid, state, datetime))
     conn.commit()
+
+
 
 
 
@@ -121,7 +117,6 @@ class domoticaWindow:
         self.callRoomOverview()
         self.buildBranding()
         self.buildFooter()
-
     def buildMenu(self):
         self.menuFrame.rowconfigure(0, weight=1)
         for c in range(3):  #   Pre-configures weight of all columns, so they will be sized evenly when the screen resizes
@@ -150,18 +145,17 @@ class domoticaWindow:
         text = 'Dit programma is geschreven in opdracht van Hogeschool Utrecht, door studenten Marc, Lars, Arman, Teun en Bart. Klas V1H. Vision Domotica \u00a9 2018'
         tk.Label(self.footerFrame, text=text).pack()
 
-
     def callRoomOverview(self):
         'Builds an overview of all rooms'
         self.resetContent()
         self.activeScreen = 'overview'
         roomOverview(self.contentFrame)
 
+
     def callDataReadings(self):
         'Calls the customers GUI'
         self.resetContent()
         self.activeScreen = 'dataread'
-        print('datareading')
         dataReadings(self.contentFrame)
         #guiCustomers.customers(self.master)
 
@@ -170,7 +164,6 @@ class domoticaWindow:
         self.resetContent()
         datamanipulations(self.contentFrame).keuzeScherm()
         self.activeScreen = 'datawrite'
-        print('datawritings')
         #guiProducts.productMain(self.master)
 
     def refreshContent(self):
@@ -187,7 +180,6 @@ class roomOverview:
     def __init__(self, master):
         self.master = master
         self.buildOverview()
-
     def buildOverview(self):
         r = 1
         c = 0
@@ -207,9 +199,11 @@ class singleRoom(tk.Frame):
         r = 1
         tk.Label(self, text=room.bewoner).grid(row=r, column=0, columnspan=2)
         r += 1
-        if room.connected:
+        if room.connected == 2:
             tk.Label(self, text='Verbonden', foreground='green', width=20).grid(row=r, column=0, columnspan=2, sticky='ew')
-        else:
+        elif room.connected == 1:
+            tk.Label(self, text='Verbinding verloren', background='yellow', width=20).grid(row=r, column=0, columnspan=2, sticky='ew')
+        elif room.connected == 0:
             tk.Label(self, text='Geen verbinding', background='red', width=20).grid(row=r, column=0, columnspan=2, sticky='ew')
         r += 1
         for key in room.hardware:
@@ -223,7 +217,7 @@ class singleRoom(tk.Frame):
                 r += 1
 
         tk.Label(self, text='Camera-beelden').grid(row=r, column=0)
-        if room.connected:
+        if room.connected == 2:
             tk.Button(self, state='normal', width=2, command=lambda: openStream(room.ipaddress), bg='white').grid(row=r, column=1)
             r += 1
         else:
@@ -231,8 +225,6 @@ class singleRoom(tk.Frame):
             r += 1
         tk.Label(self, text='Noodcontactgegevens').grid(row=r, column=0)
         tk.Button(self, state='normal', width=2, command=lambda: viewNoodcontacten(room.noodcontacten), bg='white').grid(row=r, column=1)
-
-
 def openStream(ipaddress):
     google_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(google_path))
@@ -258,6 +250,8 @@ def viewNoodcontacten(noodcontacten):
         tk.Label(window, text='Geen noodcontacten beschikbaar', font=("Arial", 16)).grid(row=2, column=2)
 
     tk.Button(window, text="Terug", command=window.destroy).grid(row=3, column=2)
+
+
 
 
 class singleNoodcontact(tk.Frame):
@@ -302,7 +296,6 @@ class dataReadings:
 class datamanipulations:
     def __init__(self, master):
         self.master = master
-
     def keuzeScherm(self):
         self.resetContent()
         tk.Button(self.master, text="Persoon toevoegen", font=20, command=self.pToevoegen).grid(row=1, column=0, sticky='news')
@@ -435,7 +428,7 @@ class datamanipulations:
 
         tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=6, column=1, sticky='nsew', columnspan=1)
         tk.Button(self.master, text="Uitvoeren", command=self.puitkamer_databasewriter).grid(row=5, column=1,
-                                                                                            sticky='nsew', columnspan=1)
+                                                                                             sticky='nsew', columnspan=1)
 
     def puitkamer_databasewriter(self):
         cur.execute("update kamer set persoonsid = NULL where kamerid = %s",
@@ -487,6 +480,14 @@ class datamanipulations:
             widget.destroy()
 
 
+def acceptIncomingConnections():
+    while 1:
+        (clientsocket, address) = serversocket.accept()
+        kamerid = clientsocket.recv(2).decode()
+        kamers[int(kamerid)].acceptClientsocket(clientsocket, address[0])
+
+
+
 while 1:
     # Maak een verbinding met de database. De rest van het programma wordt pas uitgevoerd zodra deze verbinding gelegd is.
     try:
@@ -496,7 +497,6 @@ while 1:
         print("Unable to connect to the database")
         continue
     break
-
 
 # Haalt alle gegevens van de kamers op en slaat deze op in Objecten
 cur.execute('''SELECT kamerid FROM kamer''')
@@ -524,7 +524,3 @@ root.state('zoomed')
 
 my_gui = domoticaWindow(root)
 root.mainloop()
-
-
-
-
