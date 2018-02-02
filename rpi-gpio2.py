@@ -2,7 +2,7 @@ import time, os, socket, threading
 import RPi.GPIO as GPIO
 
 
-kamerid = 1
+kamerid = 2
 status = "1"
 hardwareid = "4"
 
@@ -104,10 +104,10 @@ def checkCAMstatus():
 
 
 # Setup all hardware Objects
-cameraButton = hardwareButton(2, 21)
-lightButton = hardwareButton(1, 23)
-resetNoodButton = hardwareButton(4, 5)
-noodButton = hardwareButton(4, 12)
+cameraButton = hardwareButton(7, 21)
+lightButton = hardwareButton(6, 23)
+resetNoodButton = hardwareButton(9, 5)
+noodButton = hardwareButton(9, 12)
 
 
 # Global variables
