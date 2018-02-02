@@ -1,6 +1,5 @@
 import tkinter as tk
 import psycopg2, socket, threading, time, webbrowser
-from tkinter.ttk import Separator
 from PIL import Image, ImageTk
 
 
@@ -68,8 +67,6 @@ class hardware:
     def __init__(self, hardwareID, description):
         self.hardwareID = hardwareID
         self.description = description
-        #cur.execute('''SELECT status FROM kameractiviteit WHERE activiteitid = (SELECT MAX(activiteitid) FROM kameractiviteit WHERE hardwareid = %s)''', (hardwareID, ))
-        #self.state = cur.fetchall()[0][0]
         self.state = 0
 
     def setState(self, state):
@@ -96,7 +93,6 @@ class domoticaWindow:
     def __init__(self, master):
         self.master = master
         self.master.title("Vision Domotica")
-        #self.master.wm_attributes('-fullscreen', 'true')
         self.menuFrame = tk.Frame(self.master, bg='lightblue')
         self.contentFrame = tk.Frame(self.master)
         self.brandingFrame = tk.Frame(self.master)
@@ -159,14 +155,12 @@ class domoticaWindow:
         self.resetContent()
         self.activeScreen = 'dataread'
         dataReadings(self.contentFrame)
-        #guiCustomers.customers(self.master)
 
     def callDatamanipulation(self):
         'calls the products GUI'
         self.resetContent()
         datamanipulations(self.contentFrame).keuzeScherm()
         self.activeScreen = 'datawrite'
-        #guiProducts.productMain(self.master)
 
     def refreshContent(self):
         if self.activeScreen == 'overview':
@@ -227,10 +221,11 @@ class singleRoom(tk.Frame):
             r += 1
         tk.Label(self, text='Noodcontactgegevens').grid(row=r, column=0)
         tk.Button(self, state='normal', width=2, command=lambda: viewNoodcontacten(room.noodcontacten), bg='white').grid(row=r, column=1)
+
 def openStream(ipaddress):
+    'De ipaddress wordt ergens opgevraagd. Google chrome wordt geregistreerd en gebruikt om de browser op te starten met de meegegeven url'
     google_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(google_path))
-    #ipaddress = "145.89.157.189:8081"
     url = "http://{}:8081".format(ipaddress)
     webbrowser.get(using='chrome').open(url)
 
@@ -297,16 +292,24 @@ class dataReadings:
 
 class datamanipulations:
     def __init__(self, master):
+        #Hiermee zeg je dat het hoofdframe, gelijk is aan de master.
         self.master = master
+
     def keuzeScherm(self):
+        #Alles wat in het beginscherm stond wordt gereset.
         self.resetContent()
+
+        #Hier worden verschillende knoppen aangemaakt en in het frame geplaatst.
         tk.Button(self.master, text="Persoon toevoegen", font=20, command=self.pToevoegen).grid(row=1, column=0, sticky='news')
         tk.Button(self.master, text="Persoon verwijderen", font=20, command=self.pVerwijderen).grid(row=1, column=1, sticky='nsew')
         tk.Button(self.master, text="Persoon aan kamer toevoegen", font=20, command=self.pkamerToevoegen).grid(row=1, column=2, sticky='nsew')
         tk.Button(self.master, text="Persoon uit kamer halen", font=20, command=self.pkamerVerwijderen).grid(row=1, column=3, sticky='nsew')
 
     def pToevoegen(self):
+        #Het keuzeScherm(self) wordt gerest.
         self.resetContent()
+
+        #Hier worden teksten aangemaakt en in het frame gezet.
         tk.Label(self.master, text="Voer hier de gegevens van de nieuwe bewoner in").grid(row=1, column=0, sticky='nsew')
         tk.Label(self.master, text="Voornaam: ").grid(row=2, column=0, sticky='nsew')
         tk.Label(self.master, text="Tussenvoegsel").grid(row=3, column=0, sticky='nsew')
@@ -314,24 +317,29 @@ class datamanipulations:
         tk.Label(self.master, text="Geboortedatum(YYYY-MM-DD): ").grid(row=5, column=0, sticky='nsew')
         tk.Label(self.master, text="Geslacht: ").grid(row=6, column=0, sticky='nsew')
 
+        #Dit zijn alle invul velden in het scherm
         self.p_naamEntry = tk.Entry(self.master)
         self.p_tussenvoegselEntry = tk.Entry(self.master)
         self.p_achternaamEntry = tk.Entry(self.master)
         self.p_geboortedatumEntry = tk.Entry(self.master)
         self.p_geslachtEntry = tk.Entry(self.master)
 
+        #Dit zijn de invul velden die in het frame geplaats worden, zodat ze te zien zijn op het scherm.
         self.p_naamEntry.grid(row=2, column=1, sticky='nsew')
         self.p_tussenvoegselEntry.grid(row=3, column=1, sticky='nsew')
         self.p_achternaamEntry.grid(row=4, column=1, sticky='nsew')
         self.p_geboortedatumEntry.grid(row=5, column=1, sticky='nsew')
         self.p_geslachtEntry.grid(row=6, column=1, sticky='nsew')
 
+        #Dit zijn de knoppen die aangemaakt worden en geplaats worden in de frame.
         tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=7, column=0, sticky='nsew', columnspan=1)
         tk.Button(self.master, text="Verder", command=self.p_databasewriter).grid(row=7, column=1, sticky='nsew', columnspan=2)
 
     def npToevoegen(self):
+        #De inhoud van de vorige frame wordt verwijderd.
         self.resetContent()
 
+        #Hier worden de teksten aangemaakt en in het frame gezet.
         tk.Label(self.master, text="Voer hier de noodgegevens van de bewoner in").grid(row=0, column=0, sticky='nsew')
         tk.Label(self.master, text="Voornaam: ").grid(row=1, column=0, sticky='nsew')
         tk.Label(self.master, text="Tussenvoegsel: ").grid(row=2, column=0, sticky='nsew')
@@ -344,6 +352,7 @@ class datamanipulations:
         tk.Label(self.master, text="Huisnummer: ").grid(row=9, column=0, sticky='nsew')
         tk.Label(self.master, text="Soort: ").grid(row=10, column=0, sticky='nsew')
 
+        #Dit zijn alle invulvelden in het scherm
         self.np_naamEntry = tk.Entry(self.master)
         self.np_tussenvoegselEntry = tk.Entry(self.master)
         self.np_achternaamEntry = tk.Entry(self.master)
@@ -355,6 +364,7 @@ class datamanipulations:
         self.np_huisnummerEntry = tk.Entry(self.master)
         self.np_soortEntry = tk.Entry(self.master)
 
+        #Hier worden de invulvelden van hierboven geplaatst in het frame.
         self.np_naamEntry.grid(row=1, column=1)
         self.np_tussenvoegselEntry.grid(row=2, column=1)
         self.np_achternaamEntry.grid(row=3, column=1)
@@ -366,79 +376,103 @@ class datamanipulations:
         self.np_huisnummerEntry.grid(row=9, column=1)
         self.np_soortEntry.grid(row=10, column=1)
 
+        #Hier wordt er een knop aangemaakt en in het frame geplaatst.
         tk.Button(self.master, text="Uitvoeren", command=self.np_databasewriter).grid(row=11, column=0, sticky='nsew', columnspan=2)
 
     def pVerwijderen(self):
+
+        # De inhoud van de vorige frame wordt verwijderd.
         self.resetContent()
 
+        #Hier worden de teksten aangemaakt en vervolgens in het frame gezet.
         tk.Label(self.master, text="Vul hier gegevens in van de persoon die je wilt verwijderen").grid(row=0, column=0, sticky='nsew')
         tk.Label(self.master, text="Voornaam: ").grid(row=1, column=0, sticky='nsew')
         tk.Label(self.master, text="Achternaam: ").grid(row=2, column=0, sticky='nsew')
         tk.Label(self.master, text="Geboortedatum: ").grid(row=3, column=0, sticky='nsew')
 
+        #Hier worden de invulvelden aangemaakt.
         self.pv_naamEntry = tk.Entry(self.master)
         self.pv_achternaamEntry = tk.Entry(self.master)
         self.pv_geboortedatumEntry = tk.Entry(self.master)
 
+        #Hier worden de invulvelden in het frame geplaatst.
         self.pv_naamEntry.grid(row=1, column=1, sticky='nsew')
         self.pv_achternaamEntry.grid(row=2, column=1, sticky='nsew')
         self.pv_geboortedatumEntry.grid(row=3, column=1, sticky='nsew')
 
+        #Hier worden knoppen aangemaakt en geplaatst in het frame.
         tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=4, column=0, sticky='nsew', columnspan=1)
         tk.Button(self.master, text="Uitvoeren", command=self.pv_databaseremove).grid(row=4, column=1, sticky='nsew', columnspan=2)
 
     def pkamerToevoegen(self):
+        # De inhoud van de vorige frame wordt verwijderd.
         self.resetContent()
 
+        #Hier worden de teksten aangemaakt en vervolgens in het frame gezet.
         tk.Label(self.master, text="Vul hier de gegevens van de persoon in ").grid(row=0, column=0, sticky='nsew')
         tk.Label(self.master, text="Kamerid: ").grid(row=1, column=0, sticky='nsew')
         tk.Label(self.master, text="Voornaam: ").grid(row=2, column=0, sticky='nsew')
         tk.Label(self.master, text="Achternaam: ").grid(row=3, column=0, sticky='nsew')
         tk.Label(self.master, text="Geboortedatum: ").grid(row=4, column=0, sticky='nsew')
 
+        #Hier worden invulvelden gemaakt.
         self.pinkamer_kameridEntry = tk.Entry(self.master)
         self.pinkamer_voornaamEntry = tk.Entry(self.master)
         self.pinkamer_achternaamEntry = tk.Entry(self.master)
         self.pinkamer_geboortedatumEntry = tk.Entry(self.master)
 
+        #Hier worden de invulvelden hierboven geplaatst in het frame.
         self.pinkamer_kameridEntry.grid(row=1, column=1, sticky='nsew')
         self.pinkamer_voornaamEntry.grid(row=2, column=1, sticky='nsew')
         self.pinkamer_achternaamEntry.grid(row=3, column=1, sticky='nsew')
         self.pinkamer_geboortedatumEntry.grid(row=4, column=1, sticky='nsew')
 
+        #Hier worden knoppen gemaakt en geplaatst in het frame.
         tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=6, column=1, sticky='nsew', columnspan=1)
         tk.Button(self.master, text="Uitvoeren", command=self.pinkamer_databasewriter).grid(row=5, column=1, sticky='nsew', columnspan=1)
 
     def pkamerVerwijderen(self):
+        # De inhoud van de vorige frame wordt verwijderd.
         self.resetContent()
 
+        #Hier worden de teksten aangemaakt en in het frame geplaatst.
         tk.Label(self.master, text="Vul hier de gegevens van de persoon in ").grid(row=0, column=0, sticky='nsew')
         tk.Label(self.master, text="Kamerid: ").grid(row=1, column=0, sticky='nsew')
         tk.Label(self.master, text="Voornaam: ").grid(row=2, column=0, sticky='nsew')
         tk.Label(self.master, text="Achternaam: ").grid(row=3, column=0, sticky='nsew')
         tk.Label(self.master, text="Geboortedatum: ").grid(row=4, column=0, sticky='nsew')
 
+        #Hier worden de invulvelden aangemaakt
         self.puitkamer_kameridEntry = tk.Entry(self.master)
         self.puitkamer_voornaamEntry = tk.Entry(self.master)
         self.puitkamer_achternaamEntry = tk.Entry(self.master)
         self.puitkamer_geboortedatumEntry = tk.Entry(self.master)
 
+        #Hier worden de hierboven genoemde invulvelden in het frame gezet.
         self.puitkamer_kameridEntry.grid(row=1, column=1, sticky='nsew')
         self.puitkamer_voornaamEntry.grid(row=2, column=1, sticky='nsew')
         self.puitkamer_achternaamEntry.grid(row=3, column=1, sticky='nsew')
         self.puitkamer_geboortedatumEntry.grid(row=4, column=1, sticky='nsew')
 
+        #Hier worden knoppen aangemaakt en vervolgens in het frame gezet.
         tk.Button(self.master, text="Terug", command=self.keuzeScherm).grid(row=6, column=1, sticky='nsew', columnspan=1)
         tk.Button(self.master, text="Uitvoeren", command=self.puitkamer_databasewriter).grid(row=5, column=1,
                                                                                              sticky='nsew', columnspan=1)
 
     def puitkamer_databasewriter(self):
+
+        #Hier wordt er een query uitgevoerd om de database te updaten. In dit geval wordt er iemand uit de kamer gehaald.
         cur.execute("update kamer set persoonsid = NULL where kamerid = %s",
                     (self.puitkamer_kameridEntry.get()))
         conn.commit()
+
+        #Na het uitvoeren van de query, kom je weer terug in het keuze scherm van DB schrijven.
         self.keuzeScherm()
 
     def pinkamer_databasewriter(self):
+
+        #Hier wordt er een query uitgevoerd om iemand aan een kamer toe te voegen. Eerst wordt de persoonid opgeslagen
+        #en vervolgens wordt de query om de kamer te updaten uitgevoerd.
         cur.execute("select persoonsid from persoon where voornaam = %s and achternaam = %s", (self.pinkamer_voornaamEntry.get(), self.pinkamer_achternaamEntry.get()))
         persoonid = cur.fetchall()[0][0]
 
@@ -446,27 +480,38 @@ class datamanipulations:
         cur.execute("update kamer set persoonsid = %s where kamerid = %s",
                     (persoonid, self.pinkamer_kameridEntry.get()))
         conn.commit()
+
+        # Na het uitvoeren van de query, kom je weer terug in het keuze scherm van DB schrijven.
         self.keuzeScherm()
 
     def pv_databaseremove(self):
+
+        #Dit is een functie die een persoon verwijdert uit de database met de ingevulde voornaam, achternaam, geboortedatum.
         cur.execute("delete from persoon where voornaam = %s and achternaam = %s and geboortedatum = %s",
                     (self.pv_naamEntry.get(), self.pv_achternaamEntry.get(), self.pv_geboortedatumEntry.get()))
         conn.commit()
 
+        #Hiermee ga je weer terug naar het keuzescherm.
         self.keuzeScherm()
 
     def p_databasewriter(self):
+
+        #Hier wordt er een query uitgevoerd om een nieuw bewoner in de database op te slaan.
         cur.execute("INSERT INTO persoon(voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht) "
                     "VALUES(%s, %s, %s, %s, %s)", (self.p_naamEntry.get(), self.p_tussenvoegselEntry.get(), self.p_achternaamEntry.get(),
                                                    self.p_geboortedatumEntry.get(), self.p_geslachtEntry.get()))
         conn.commit()
+
+        #Na het uitvoeren van de query, voert die de onderstaande functie uit.
         self.npToevoegen()
 
     def np_databasewriter(self):
 
+        #Hier wordt de laatste persoonsid opgevraagd en opgeslagen in een variable.
         cur.execute("select * from persoon order by persoonsid desc limit 1")
         noodpersoonid = cur.fetchall()[0][0]
 
+        #Hier wordt een query uitgevoerd die een nieuwe noodpersooncontact opslaat in een database.
         cur.execute(
             "INSERT INTO persoon(voornaam, tussenvoegsel, achternaam, geboortedatum, geslacht, telefoonnummer, postcode, plaatsnaam, huisnummer, noodpersoonid, soort) "
             "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
@@ -475,9 +520,13 @@ class datamanipulations:
              self.np_soortEntry.get()));
 
         conn.commit()
+
+        #Dit zorgt ervoor dat je weer terugkeert naar het keuzescherm
         self.keuzeScherm()
 
     def resetContent(self):
+
+        'reset de inhoud van de frame en plaatst het nieuwe inhoud'
         for widget in self.master.winfo_children():
             widget.destroy()
 
