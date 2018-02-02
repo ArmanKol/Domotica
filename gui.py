@@ -455,36 +455,7 @@ def startgui():
     frames()
     toonhoofdmenuframe()
 
-    root.mainloop()
-
-
-while 1:
-    # Maak een verbinding met de database. De rest van het programma wordt pas uitgevoerd zodra deze verbinding gelegd is.
-    try:
-        conn = psycopg2.connect("dbname='idp_domotica' user='idpgroep' host='37.97.193.131' password='S67asbiMQA'")
-        cur = conn.cursor()
-    except:
-        print("Unable to connect to the database")
-        continue
-    break
-
-
-# Haalt alle gegevens van de kamers op en slaat deze op in Objecten
-cur.execute('''SELECT kamerid FROM kamer''')
-kamers = dict()
-for kmr in cur.fetchall():
-    kamers[kmr[0]] = kamer(kmr[0])
-
-
-serversocket = socket.socket(
-    socket.AF_INET, socket.SOCK_STREAM)
-serversocket.bind(('', 80))
-serversocket.listen(5)
-
-
-incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
-incomingConnectionsThread.daemon = True
-incomingConnectionsThread.start()
+    root.mainloop(
 
 
 startgui()
