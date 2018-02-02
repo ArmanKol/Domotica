@@ -4,11 +4,11 @@ de lampen, camera en de noodknop per kamer in de gaten houdt.
 
 We hebben verschillende bestanden in de github staan: guinew, rpi-gpio en rpi-gpio2. rpi-gpio is voor kamer1 en rpi-gpio2 is voor kamer2.
 
-1. img
+1. map IMG
 Is een map waar de foto's voor de gui in staan.
 
 2.guinew (Gemaakt door: Bart, Teun en Arman)
-Dat is een programma die op de centrale draait. Een scherm waarop je alle statussen van de verschillende kamers kunt zien.
+Is een programma die op de centrale draait. Een scherm waarop je alle statussen van de verschillende kamers kunt zien.
 De statussen worden live in de gui ververst. 
 
 3.rpi-gpio en rpi-gpio2 (Gemaakt door: Lars en Bart)
