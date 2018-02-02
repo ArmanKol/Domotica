@@ -125,7 +125,7 @@ class domoticaWindow:
         tk.Button(self.menuFrame, width=50, height=2, font=font, bg='white',text='DB Schrijven', command=self.callDatamanipulation).grid(column=2,row=0, sticky='news')
 
     def buildBranding(self):
-        image = Image.open('.\img\illuminati33.gif')
+        image = Image.open('.\img\logo.gif')
         photo = ImageTk.PhotoImage(image)
 
         label = tk.Label(self.brandingFrame, image=photo, justify='right')
