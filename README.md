@@ -7,6 +7,6 @@ We hebben verschillende bestanden in de github staan: guinew, rpi-gpio en rpi-gp
 
 1. map IMG: Is een map waar de foto's voor de gui in staan.
 
-2.guinew (Gemaakt door: Bart, Teun en Arman): Is een programma die op de centrale draait. Een scherm waarop je alle statussen van de verschillende kamers kunt zien. De statussen worden live in de gui ververst. 
+2.guinew (Gemaakt door: Bart, Teun en Arman): Is een programma die op de centrale draait. Een scherm waarop je alle statussen van de verschillende kamers kunt zien. De statussen worden live in de gui ververst. Ook kun je de bewoners per kamer zien en de noodcontactgegevens van die bewoner. Verder kunnen we de laatste kamer activiteiten in de gui zien. Als laatst hebben we nog een functie om personen aan de database toe te voegen of juist te verwijderen. Daarnaast kun je ook bewoners uit de kamer zetten of juist erin.
 
 3.rpi-gpio en rpi-gpio2 (Gemaakt door: Lars en Bart): Dit is een programma die op de raspberry pi draait. Het houdt de kameractiviteiten in de gaten en stuurt vervolgens die informatie door naar de gui.
