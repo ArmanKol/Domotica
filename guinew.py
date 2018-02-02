@@ -46,7 +46,9 @@ class kamer:
                 self.connected = False
                 self.listenerThread._stop()
             if hardwareID == 0:
-                self.connected = 2
+                if self.connected != 2:
+                    self.connected = 2
+                    my_gui.refreshContent()
                 continue
             else:
                 self.hardware[hardwareID].setState(state)
