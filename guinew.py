@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 
 class kamer:
     def __init__(self, kamerid):
+        # Om objecten te creeëren voor iedere ruimte die gevonden is in de database
         self.kamerid = kamerid
         self.connected = 0
         cur.execute('''SELECT voornaam, tussenvoegsel, achternaam FROM persoon WHERE persoonsid = (SELECT persoonsid FROM kamer WHERE kamerid = %s)''', (self.kamerid,))
@@ -25,6 +26,7 @@ class kamer:
 
 
     def acceptClientsocket(self, clientsocket, ipaddress):
+        # Slaat het clientsocket op als eigen variabele wanneer een kamer een verbinding maakt
         self.clientsocket = clientsocket
         self.listenerThread = threading.Thread(target=self.listener)
         self.listenerThread.start()
@@ -35,6 +37,7 @@ class kamer:
 
 
     def listener(self):
+        # Luister naar berichten van de kamer
         while 1:
             try:
                 message = self.clientsocket.recv(5).decode().split(';', 2)
@@ -45,6 +48,7 @@ class kamer:
                 self.connected = False
                 self.listenerThread._stop()
             if hardwareID == 0:
+                # Als het een 'OK' bericht is, is de verbinding OK en wordt de GUI refreshed
                 if self.connected != 2:
                     self.connected = 2
                     my_gui.refreshContent()
@@ -56,6 +60,7 @@ class kamer:
 
 
     def keepAlive(self):
+        # Stelt de verbinding iedere 10 minuten op 'NIET OK'
         while True:
             time.sleep(600)
             if self.connected == 2:
@@ -65,14 +70,17 @@ class kamer:
 
 class hardware:
     def __init__(self, hardwareID, description):
+        # Maakt objecten voor ieder stuk hardware wat aan een kamer gebonden staat
         self.hardwareID = hardwareID
         self.description = description
         self.state = 0
 
     def setState(self, state):
+        # Stelt een nieuwe status in voor een stuk hardware
         self.state = state
 
 def on_closing():
+    # Wordt uitgevoerd wanneer de GUI gesloten wordt
     conn.commit()
     cur.close()
     conn.close()
@@ -80,6 +88,7 @@ def on_closing():
 
 
 def databaseWriter(kamerid, hardwareid, state):
+    # Global function om weg te schrijven in de database
     datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     cur.execute('''INSERT INTO kameractiviteit(kamerid, hardwareid, status, datum_tijd) VALUES (%s, %s, %s, %s)''', (kamerid, hardwareid, state, datetime))
     conn.commit()
@@ -91,6 +100,7 @@ def databaseWriter(kamerid, hardwareid, state):
 class domoticaWindow:
 
     def __init__(self, master):
+        # Bouwt het framework van de GUI
         self.master = master
         self.master.title("Vision Domotica")
         self.menuFrame = tk.Frame(self.master, bg='lightblue')
@@ -116,6 +126,7 @@ class domoticaWindow:
         self.buildBranding()
         self.buildFooter()
     def buildMenu(self):
+        # Vult het Menu Frame met alle knoppen
         self.menuFrame.rowconfigure(0, weight=1)
         for c in range(3):  #   Pre-configures weight of all columns, so they will be sized evenly when the screen resizes
             self.menuFrame.columnconfigure(c, weight=1)
@@ -125,6 +136,7 @@ class domoticaWindow:
         tk.Button(self.menuFrame, width=50, height=2, font=font, bg='white',text='DB Schrijven', command=self.callDatamanipulation).grid(column=2,row=0, sticky='news')
 
     def buildBranding(self):
+        # Vult het Frame met logo's
         image = Image.open('.\img\logo.gif')
         photo = ImageTk.PhotoImage(image)
 
@@ -140,6 +152,7 @@ class domoticaWindow:
         labelV.pack()
 
     def buildFooter(self):
+        # Vult de Footer van het programma
         text = 'Dit programma is geschreven in opdracht van Hogeschool Utrecht, door studenten Marc, Lars, Arman, Teun en Bart. Klas V1H. Vision Domotica \u00a9 2018'
         tk.Label(self.footerFrame, text=text).pack()
 
@@ -177,6 +190,7 @@ class roomOverview:
         self.master = master
         self.buildOverview()
     def buildOverview(self):
+        # Voor iedere kamer, maak een cel aan met alle informatie van de kamer
         r = 1
         c = 0
         for key in kamers:
@@ -189,6 +203,7 @@ class roomOverview:
 
 class singleRoom(tk.Frame):
     def __init__(self, parent, room):
+        # Een Frame Child class om een overzicht te maken van de gegeven kamer
         tk.Frame.__init__(self, parent)
         self.config(width=100, bd=5, relief='raised', padx=1)
         tk.Label(self, text="Kamer "+str(room.kamerid), font=("Arial", 16), width=15).grid(row=0, column=0, columnspan=2)
@@ -231,6 +246,7 @@ def openStream(ipaddress):
 
 
 def viewNoodcontacten(noodcontacten):
+    # Roept een nieuw venster op en vult deze met alle gegevens van een noodcontact
     window = tk.Toplevel()
     window.wm_title("Noodcontactgegevens")
 
@@ -253,6 +269,8 @@ def viewNoodcontacten(noodcontacten):
 
 class singleNoodcontact(tk.Frame):
     def __init__(self, parent, noodcontact):
+        # Een child class om het noodcontact venster te vullen met de noodcontacten.
+        # Deze class neemt 1 noodcontact en maakt deze op zodat er 1 overzicht van alle data ontstaat
         tk.Frame.__init__(self, parent)
         self.config(width=100, bd=5, relief='raised', padx=1)
 
@@ -276,6 +294,7 @@ class singleNoodcontact(tk.Frame):
 
 class dataReadings:
     def __init__(self, master):
+        # Bouwt een Log van alle data uit kameractiviteiten uit de database
         self.master = master
         cur = conn.cursor()
         cur.execute('''SELECT ActiviteitID, KamerID, HardwareID, Status, Datum_tijd  FROM kameractiviteit ORDER BY ActiviteitID DESC''')
@@ -555,23 +574,25 @@ kamers = dict()
 for kmr in cur.fetchall():
     kamers[kmr[0]] = kamer(kmr[0])
 
-
+# Stel alles in voor de sockets
 serversocket = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('', 80))
 serversocket.listen(5)
 
-
+# Maak een Thread aan om te luisteren naar nieuwe verbindingen van kamers
 incomingConnectionsThread = threading.Thread(target=acceptIncomingConnections)
 incomingConnectionsThread.daemon = True
 incomingConnectionsThread.start()
 
-
+# Configuratie voor de GUI
 root = tk.Tk()
 root.title("Domotica systeem")
 root.protocol("WM_DELETE_WINDOW", on_closing)
-
 root.state('zoomed')
 
+# Vul de GUI
 my_gui = domoticaWindow(root)
+
+#Start de GUI mainloop
 root.mainloop()

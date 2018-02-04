@@ -1,7 +1,6 @@
 import time, os, socket, threading
 import RPi.GPIO as GPIO
 
-
 kamerid = 1
 status = "1"
 hardwareid = "4"
@@ -9,7 +8,9 @@ hardwareid = "4"
 
 class serversocket:
     def __init__(self, server, port):
+        # Maak een object aan voor de verbinding richting de centrale
         while True:
+            # Ga pas door wanneer er een verbinding met de centrale is
             try:
                 self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.s.connect((server, port))
@@ -21,21 +22,26 @@ class serversocket:
             break
 
     def receiveMessage(self):
+        # Ontvangt een bericht van de centrale en decodeert deze
         return self.s.recv(2).decode()
 
     def sendMessage(self, hardwareID, status):
+        # Stuur een bericht naar de centrale
         message = '{0:>03}'.format(hardwareID) + ';' + str(status)
         try:
             self.s.send(message.encode())
         except:
+            # Als dit mislukt, ga ervan uit dat de centrale gereset is en sluit de eigen verbinding
             self.shutdown()
 
     def keepAlive(self):
+        # Stuur iedere 5 seconden een bericht dat alles OK is
         while True:
             self.sendMessage(0, 1)
             time.sleep(5)
 
     def shutdown(self):
+        # Sluit de verbinding
         keepAliveThread._stop()
         self.s.shutdown(socket.SHUT_RDWR)
         self.s.close()
@@ -43,25 +49,30 @@ class serversocket:
 
 class hardwareButton:
     def __init__(self, hardwareID, gpioPin):
+        # Maakt objecten voor alle hardware onderdelen op deze PI
         self.hardwareID = hardwareID
         self.gpioPin = gpioPin
         self.state = 0
 
 
     def isButtonPressed(self):
+        # Returned of de knop ingedrukt is of niet
         return not GPIO.input(self.gpioPin)
 
     def turnOn(self):
+        # Geef aan dat dit stuk hardware aanstaat
         self.state = 1
         self.updateCentrale()
 
 
     def turnOff(self):
+        # Geef aan dat dit stuk hardware uit staat
         self.state = 0
         self.updateCentrale()
 
 
     def updateCentrale(self):
+        # Stuur een bericht naar de centrale met de nieuwe status van het stuk hardware
         serverconnection.sendMessage(self.hardwareID, self.state)
 
 
@@ -78,6 +89,7 @@ def setup():
 
 
 def turnCameraOff():
+    # Schakel de Camera uit
     print('Motion already running...')
     print('Stopping motion...')
     command = 'sudo systemctl stop motion'
@@ -86,6 +98,7 @@ def turnCameraOff():
 
 
 def turnCameraOn():
+    # Schakel de Camera in
     print('Starting motion...')
     command = 'sudo systemctl start motion'
     os.system('echo %s|sudo -S %s' % ('raspberry', command))
@@ -126,6 +139,7 @@ keepAliveThread.start()
 
 
 while True:
+    # Kijk of er een knop ingedrukt is en voer acties uit
     if resetNoodButton.isButtonPressed() and noodButton.state:
         print('Het noodalarm wordt gereset')
         noodButton.turnOff()
